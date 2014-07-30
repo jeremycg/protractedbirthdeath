@@ -327,7 +327,7 @@ tauloop<-function(x,variable){
 	return(holding)
 	}
 	
-plottau<-function(holding,vars){
+plottau<-function(holding,vars,max){
 	if(vars=="incipext"){
 		d="speccomp"
 		e="incipsp"}
@@ -338,7 +338,7 @@ plottau<-function(holding,vars){
 		d="incipsp"
 		e="incipext"}
 	v <- ggplot(holding, aes(x, y, z = z))
-	print(v+geom_tile(aes(fill = z)) + stat_contour(bins=20)+xlab(d)+ylab(e)+ scale_fill_gradient(limits=c(0, input$maxcolour)))
+	print(v+geom_tile(aes(fill = z)) + stat_contour(bins=20)+xlab(d)+ylab(e)+ scale_fill_gradient(limits=c(0, max)))
 	}
  
 shinyServer(function(input, output) {
@@ -393,6 +393,6 @@ shinyServer(function(input, output) {
 	plot(read.tree(text=x2))
 	})
 	output$Plot14<-renderPlot({
-		plottau(tauloop(input$taurate,input$tauvariable),input$tauvariable)
+		plottau(tauloop(input$taurate,input$tauvariable),input$tauvariable,input$maxcolour)
 	})
 })
