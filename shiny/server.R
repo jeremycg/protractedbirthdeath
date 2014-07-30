@@ -4,7 +4,8 @@ lapply(libraries, require, character.only=T)
 setwd(choose.dir())	
 		
 	
-	
+
+		
 x=fread("compiled.csv")
 y=x[which(x$time==0),]
 y$cvlivingsp=exp(y$sdlivingsp/(y$meanlivingsp+0.00001))
@@ -337,7 +338,7 @@ plottau<-function(holding,vars){
 		d="incipsp"
 		e="incipext"}
 	v <- ggplot(holding, aes(x, y, z = z))
-	print(v+geom_tile(aes(fill = z)) + stat_contour(bins=20)+xlab(d)+ylab(e))
+	print(v+geom_tile(aes(fill = z)) + stat_contour(bins=20)+xlab(d)+ylab(e)+ scale_fill_gradient(limits=c(0, input$maxcolour)))
 	}
  
 shinyServer(function(input, output) {

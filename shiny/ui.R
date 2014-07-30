@@ -131,6 +131,7 @@ mainPanel(
                 min = 0.0,
                  max = 1.0, 
                 value = 0.4,step=0.01,ticks=T),
+          sliderInput("maxcolour","max colour",min=0.0,max=100.0,value=8,step=0.01,ticks=T),
 	  plotOutput("Plot14")
 	  )
   ))
