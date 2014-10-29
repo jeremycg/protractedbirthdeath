@@ -18,8 +18,8 @@ y1=as.matrix(y)
 pbdsim=function(pars,totaltime){
 	good=list()
 	incipient=list()
-	good[[1]]=c(1,15,15,-1)
-	incipient[[1]]=c(2,15,-1,-1)
+	good[[1]]=c(1,totaltime,totaltime,-1)
+	incipient[[1]]=c(2,totaltime,-1,-1)
 	taxaid=3
 	deadgood=list()
 	deadincipient=list()
@@ -32,35 +32,35 @@ pbdsim=function(pars,totaltime){
 		denom=sum(probs)
 		probs=probs/denom
 		t=t-log(runif(1))/denom
-		if(t>=15){break}
+		if(t>=totaltime){break}
 		event=sample(1:5,1,prob=probs)
 		if(event==1){
 			#new incipient from good
-			incipient[[numincipient+1]]=c(taxaid,15-t,-1,-1)
+			incipient[[numincipient+1]]=c(taxaid,totaltime-t,-1,-1)
 			taxaid=taxaid+1
 		} else if (event==2){
 			#new good from incipient
 			take=sample(1:numincipient,1)
 			good[[numgood+1]]=incipient[[take]]
-			good[[numgood+1]][3]=15-t
+			good[[numgood+1]][3]=totaltime-t
 			incipient[[take]]=NULL
 		} else if (event==3){
 			#new from incipient
-			incipient[[numincipient+1]]=c(taxaid,15-t,-1,-1)
+			incipient[[numincipient+1]]=c(taxaid,totaltime-t,-1,-1)
 			taxaid=taxaid+1
 		} else if (event==4){
 			#dead good
 			totaldeadgood=length(deadgood)
 			take=sample(1:numgood,1)
 			deadgood[[totaldeadgood+1]]=good[[take]]
-			deadgood[[totaldeadgood+1]][4]=15-t
+			deadgood[[totaldeadgood+1]][4]=totaltime-t
 			good[[take]]=NULL
 		} else if (event==5){
 			#dead incipient
 			totaldeadincipient=length(deadincipient)
 			take=sample(1:numincipient,1)
 			deadincipient[[totaldeadincipient+1]]=incipient[[take]]
-			deadincipient[[totaldeadincipient+1]][4]=15-t
+			deadincipient[[totaldeadincipient+1]][4]=totaltime-t
 			incipient[[take]]=NULL
 		}
 	}
@@ -179,11 +179,11 @@ plotcontour<-function(data,variable,xx,yy,var1,val1,var2,val2,var3,val3,logged=F
 	if(logged==T){holding[,variable]=log(holding[,variable])}
 	return(ggplot(holding,aes(holding[,xx],holding[,yy],z=holding[,variable]),environment=environment()) + stat_contour(aes(colour = ..level..),environment=environment(),bins=numbins)+ xlim(0, 1)+ylim(0,1)+xlab(titleplot(xx))+ylab(titleplot(yy)))
 }
-pbdsim2=function(pars,totaltime){
+pbdsim2=function(pars,totaltime=15){
 	good=list()
 	incipient=list()
-	good[[1]]=c(1,15,15,-1,0)
-	incipient[[1]]=c(2,15,-1,-1,1)
+	good[[1]]=c(1,totaltime,totaltime,-1,0)
+	incipient[[1]]=c(2,totaltime,-1,-1,1)
 	taxaid=3
 	deadgood=list()
 	deadincipient=list()
@@ -196,37 +196,37 @@ pbdsim2=function(pars,totaltime){
 		denom=sum(probs)
 		probs=probs/denom
 		t=t-log(runif(1))/denom
-		if(t>=15){break}
+		if(t>=totaltime){break}
 		event=sample(1:5,1,prob=probs)
 		if(event==1){
 			#new incipient from good
 			take=sample(1:numgood,1)
-			incipient[[numincipient+1]]=c(taxaid,15-t,-1,-1,good[[take]][1])
+			incipient[[numincipient+1]]=c(taxaid,totaltime-t,-1,-1,good[[take]][1])
 			taxaid=taxaid+1
 		} else if (event==2){
 			#new good from incipient
 			take=sample(1:numincipient,1)
 			good[[numgood+1]]=incipient[[take]]
-			good[[numgood+1]][3]=15-t
+			good[[numgood+1]][3]=totaltime-t
 			incipient[[take]]=NULL
 		} else if (event==3){
 			#new from incipient
 			take=sample(1:numincipient,1)
-			incipient[[numincipient+1]]=c(taxaid,15-t,-1,-1,incipient[[take]][1])
+			incipient[[numincipient+1]]=c(taxaid,totaltime-t,-1,-1,incipient[[take]][1])
 			taxaid=taxaid+1
 		} else if (event==4){
 			#dead good
 			totaldeadgood=length(deadgood)
 			take=sample(1:numgood,1)
 			deadgood[[totaldeadgood+1]]=good[[take]]
-			deadgood[[totaldeadgood+1]][4]=15-t
+			deadgood[[totaldeadgood+1]][4]=totaltime-t
 			good[[take]]=NULL
 		} else if (event==5){
 			#dead incipient
 			totaldeadincipient=length(deadincipient)
 			take=sample(1:numincipient,1)
 			deadincipient[[totaldeadincipient+1]]=incipient[[take]]
-			deadincipient[[totaldeadincipient+1]][4]=15-t
+			deadincipient[[totaldeadincipient+1]][4]=totaltime-t
 			incipient[[take]]=NULL
 		}
 	}
