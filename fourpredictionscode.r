@@ -110,7 +110,7 @@ sisterlengths<-function(working){
 	return(phy2$edge.length[phy2$edge[,2] <= Ntip(phy2)])
 	}
 
-dlply(repsim2(c(0.1,0.1,0.1,0.1,0.1),20),.(run),.fun<-sisterlengths)
+dlply(repsim2(c(0.1,0.1,0.1,0.1,0.1),20),.(run),.fun=sisterlengths)
 
 #fine,,, a little cumbersome in the output, but whatever
 
@@ -145,7 +145,7 @@ timegivengood<-function(df){
 	return(output)
 }
 #and loop it
-dlply(repsim2(c(0.1,0.1,0.1,0.1,0.1),20),.(run),.fun<-timegivengood)
+dlply(repsim2(c(0.1,0.1,0.1,0.1,0.1),20),.(run),.fun=timegivengood)
 
 #ok, now so ratio of good vs incipient. Let's just return the number of each so it's usabl;e in other stuff
 numgoodincip<-function(df){
@@ -170,5 +170,6 @@ numgoodincip<-function(df){
 	}
 	return(c(liveincip,livegood,deadincip,deadgood))
 }
-				
+#loopit
+ddply(repsim2(c(0.1,0.1,0.1,0.1,0.1),20),.(run),.fun=numgoodincip)		
 #last is a pertubation one, can just run normal sim
