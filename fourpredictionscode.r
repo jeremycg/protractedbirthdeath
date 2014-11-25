@@ -11,7 +11,7 @@ pbdsim2=function(pars,totaltime=15){#takes a list of 5 parameters and a time
 	incipient=list()#incipients
 	good[[1]]=c(1,totaltime,totaltime,-1,0)#sim starts with one good species
 	incipient[[1]]=c(2,totaltime,-1,-1,1)#and one incipient species
-	#an individual looks like taxaid, birth time, time at "good" transition,time at death, parent
+	#an individual looks like: taxaid, birth time, time at "good" transition,time at death, parent
 	#if one of these hasn't happened yet, -1 is used
 	taxaid=3#the taxa label of the next species
 	deadgood=list()#all dead good individuals
@@ -27,7 +27,7 @@ pbdsim2=function(pars,totaltime=15){#takes a list of 5 parameters and a time
 		denom=sum(probs)#we gotta sum them for total rate per time point
 		probs=probs/denom#and then correct to 1 for the weighting
 		t=t-log(runif(1))/denom#this increases time by doob gillespie
-		#its equivalent to t=t+rexp(1,denom)
+		#it's equivalent to t=t+rexp(1,denom)
 		if(t>=totaltime){break}#if we just went over time, break
 		event=sample(1:5,1,prob=probs)#we have 5 things that can happen, weighted by probs
 		if(event==1){
@@ -89,7 +89,7 @@ treemaker <- function(x){
   }
   x$label=x$taxalabel#makes a new column to hold the tree strings
   while(length(x[,1])>=2){#while there are more than two taxa
-    birthtime=min(x$timeatbirth)#find the yongest taxa
+    birthtime=min(x$timeatbirth)#find the youngest taxa
     if(length(x[,1])==2){#if there are two
       child1=which(x$parent==1)#it breaks as we started with two taxa at t=end
       parent1=which(x$parent==0)#so manually set the parent/child
@@ -105,8 +105,8 @@ treemaker <- function(x){
 	#this changes the label of the parent, to newick format
 	#should look like (parent:distance,child:distance)
 	#but, newick can nest, so the parent or child part can be a previous label
-	#so we can recursively make a tree
-    x[parent1,]$timeofdeath=birthtime#collapses the node, so the parent node now dies at teh split
+	#so we can recursively make a tree ((parent1:distance,child1:distance):distance,(parent:distance,child:distance)) etc etc.
+    x[parent1,]$timeofdeath=birthtime#collapses the node, so the parent node now dies at the split
     x=x[-child1,]#removes the child
   }
   return(paste(x$label,";",sep=""))#returns the string, with the required tailing ;
@@ -131,7 +131,7 @@ sisterlengths<-function(working){#run on a single run from repsim2
 #output is a list - it depends on number of species, so can't be a dataframe
 
 dlply(repsim2(c(0.1,0.1,0.1,0.1,0.1),20),.(run),.fun=sisterlengths)
-#needs dlply die to list. migth be worht making a dataframe containing lists, but lists are good for now
+#needs dlply due to list. Might be worth making a dataframe containing lists, but lists are good for now
 
 #next, a function for "time slicing"
 #we want to go at say 10 million y.a
@@ -145,17 +145,17 @@ countpersistance<-function(df,t1=10,t2=5){
 	}
 	z1<-df[which(df$timeatbirth>=t1&df$timeofdeath<=t1),]#z1 is alive at t1
 	z2<-z1[which(z1$timeofdeath<=t2),]#z2 finds those of z1 that are alive at t2
-	z3<-df[which(df$timeatbirth>=t2&df$timeofdeath<=t2),]#z2 is thos alive at t2
+	z3<-df[which(df$timeatbirth>=t2&df$timeofdeath<=t2),]#z2 is those alive at t2
 	output<-(c(length(z1[,1]),length(z2[,1]),length(z3[,1])))#binds them together
 	names(output)<-c("alivet1","aliveboth","alivet2")#names them
 	return(output)
 	}
-#outputs num alive at t1, number of those alive at t1 that made it to t2, and number alive at t2
+#outputs number alive at t1, number of those alive at t1 that made it to t2, and number alive at t2
 ddply(repsim2(c(0.1,0.1,0.1,0.1,0.1),20),.(run),.fun=countpersistance)
 #dataframe out, as it will always give 3 numbers
 
 #ok, so now let's try given it is a good species, how long did it take?
-#inout is a single run
+#input is a single run
 timegivengood<-function(df){
 	output<-c()#clears output to hold
 	for(i in 1:length(df$speciationcomplete)){#for each one
@@ -167,9 +167,9 @@ timegivengood<-function(df){
 }
 #and loop it
 dlply(repsim2(c(0.1,0.1,0.1,0.1,0.1),20),.(run),.fun=timegivengood)
-#again, its a list as it is one number peroutput species
+#again, its a list as it is one number per output species
 
-#ok, now so ratio of good vs incipient. Let's just return the number of each so it's usabl;e in other stuff
+#ok, now so ratio of good vs incipient. Let's just return the number of each so it's usable in other stuff
 numgoodincip<-function(df){
 	liveincip <- 0
 	livegood  <- 0
