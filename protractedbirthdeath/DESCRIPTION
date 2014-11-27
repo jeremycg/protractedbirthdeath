@@ -1,0 +1,9 @@
+Package: protractedbirthdeath
+Title: models speciation using incipient speciation
+Version: 0.1
+Authors@R: "Jeremy Gray <jeremycgray@gmail.com> [aut, cre]"
+Description: models speciation using incipient speciation
+Depends:
+    R (>= 3.0.3)
+License: What license is it under?
+LazyData: true
