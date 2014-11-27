@@ -13,73 +13,82 @@ lapply(libraries, require, character.only = T)
 # this is the meat of the functions, actually runs the sims. takes a
 # list of 5 parameters and a time
 pbdsim2 <- function(pars, totaltime = 15) {
-    good <- list()  #list of good species
-    incipient <- list()  #incipients
-    good[[1]] <- c(1, totaltime, totaltime, -1, 0)  #sim starts with one good species
-    incipient[[1]] <- c(2, totaltime, -1, -1, 1)  #and one incipient species
-    # an individual looks like: taxaid, birth time, time at 'good'
-    # transition,time at death, parent if one of these hasn't happened yet,
-    # -1 is used
-    taxaid <- 3  #the taxa label of the next species
-    deadgood <- list()  #all dead good individuals
-    deadincipient <- list()  #all dead incipient
-    t <- 0  #we start at t=0
-    while (t <= totaltime) {
-        # until t is bigger than time (should never hit this, break out below)
-        numgood <- length(good)  #we want to know how many good species
-        numincipient <- length(incipient)  #and incipient species
-        if (numgood == 0 && numincipient == 0)
-            {
-                break
-            }  #if everything is extinct, we break
-        probs <- c(pars[1] * numgood, pars[2] * numincipient, pars[3] *
-            numincipient, pars[4] * numgood, pars[5] * numincipient)
-        # probs are the probability of each event happening so its prob good
-        # speciation times number of good species etc
-        denom <- sum(probs)  #we gotta sum them for total rate per time point
-        probs <- probs/denom  #and then correct to 1 for the weighting
-        t <- t - log(runif(1))/denom  #this increases time by doob gillespie
-        # it's equivalent to t=t+rexp(1,denom)
-        if (t >= totaltime)
-            {
-                break
-            }  #if we just went over time, break
-        event <- sample(1:5, 1, prob = probs)  #we have 5 things that can happen, weighted by probs
-        if (event == 1) {
-            # new incipient from good
-            take <- sample(1:numgood, 1)  #choose a parent
-            incipient[[numincipient + 1]] <- c(taxaid, totaltime - t, -1,
-                -1, good[[take]][1])  #add incipient with time parent etc
-            taxaid <- taxaid + 1  #increase taxaid for parental tracking
-        } else if (event == 2) {
-            # new good from incipient
-            take <- sample(1:numincipient, 1)  #choose one
-            good[[numgood + 1]] <- incipient[[take]]  #add it to good
-            good[[numgood + 1]][3] <- totaltime - t  #change its time to be good rate to t
-            incipient[[take]] <- NULL  #delete it from incipient
-        } else if (event == 3) {
-            # new from incipient
-            take <- sample(1:numincipient, 1)  #choose one
-            incipient[[numincipient + 1]] <- c(taxaid, totaltime - t, -1,
-                -1, incipient[[take]][1])  #add it in
-            taxaid <- taxaid + 1
-        } else if (event == 4) {
-            # dead good
-            totaldeadgood <- length(deadgood)  #gets length
-            take <- sample(1:numgood, 1)  #chooses one to die
-            deadgood[[totaldeadgood + 1]] <- good[[take]]  #adds it
-            deadgood[[totaldeadgood + 1]][4] <- totaltime - t  #adds death time
-            good[[take]] <- NULL  #removes it
-        } else if (event == 5) {
-            # dead incipient
-            totaldeadincipient <- length(deadincipient)  #gets length
-            take <- sample(1:numincipient, 1)  #takes it
-            deadincipient[[totaldeadincipient + 1]] <- incipient[[take]]  #adds it
-            deadincipient[[totaldeadincipient + 1]][4] <- totaltime - t  #adds death time
-            incipient[[take]] <- NULL  #removes it
-        }
+  overload=0
+  good <- list()  #list of good species
+  incipient <- list()  #incipients
+  good[[1]] <- c(1, totaltime, totaltime, -1, 0)  #sim starts with one good species
+  incipient[[1]] <- c(2, totaltime, -1, -1, 1)  #and one incipient species
+  # an individual looks like: taxaid, birth time, time at 'good'
+  # transition,time at death, parent if one of these hasn't happened yet,
+  # -1 is used
+  taxaid <- 3  #the taxa label of the next species
+  deadgood <- list()  #all dead good individuals
+  deadincipient <- list()  #all dead incipient
+  t <- 0  #we start at t=0
+  while (t <= totaltime) {
+    # until t is bigger than time (should never hit this, break out below)
+    numgood <- length(good)  #we want to know how many good species
+    numincipient <- length(incipient)  #and incipient species
+    if(numgood+numincipient>100000){
+      overload<-1
+      break
     }
-    return(c(good, incipient, deadgood, deadincipient))  #returns a list with all taxa as above
+    if (numgood == 0 && numincipient == 0) {
+      break
+    }  #if everything is extinct, we break
+    probs <- c(pars[1] * numgood, pars[2] * numincipient, pars[3] *
+                 numincipient, pars[4] * numgood, pars[5] * numincipient)
+    # probs are the probability of each event happening so its prob good
+    # speciation times number of good species etc
+    denom <- sum(probs)  #we sum them for total rate per time point
+    probs <- probs/denom  #and then correct to 1 for the weighting
+    t <- t - log(runif(1))/denom  #this increases time by doob gillespie
+    # it's equivalent to t=t+rexp(1,denom)
+    if (t >= totaltime) {
+      break
+    }  #if we just went over time, break
+    event <- sample(1:5, 1, prob = probs)  #5 things that can happen, weighted by probs
+    if (event == 1) {
+      # new incipient from good
+      take <- sample(1:numgood, 1)  #choose a parent
+      incipient[[numincipient + 1]] <- c(taxaid, totaltime - t, -1,
+                                         -1, good[[take]][1])  #add incipient with time parent etc
+      taxaid <- taxaid + 1  #increase taxaid for parental tracking
+    } else if (event == 2) {
+      # new good from incipient
+      take <- sample(1:numincipient, 1)  #choose one
+      good[[numgood + 1]] <- incipient[[take]]  #add it to good
+      good[[numgood + 1]][3] <- totaltime - t  #change its time to be good rate to t
+      incipient[[take]] <- NULL  #delete it from incipient
+    } else if (event == 3) {
+      # new from incipient
+      take <- sample(1:numincipient, 1)  #choose one
+      incipient[[numincipient + 1]] <- c(taxaid, totaltime - t, -1,
+                                         -1, incipient[[take]][1])  #add it in
+      taxaid <- taxaid + 1
+    } else if (event == 4) {
+      # dead good
+      totaldeadgood <- length(deadgood)  #gets length
+      take <- sample(1:numgood, 1)  #chooses one to die
+      deadgood[[totaldeadgood + 1]] <- good[[take]]  #adds it
+      deadgood[[totaldeadgood + 1]][4] <- totaltime - t  #adds death time
+      good[[take]] <- NULL  #removes it
+    } else if (event == 5) {
+      # dead incipient
+      totaldeadincipient <- length(deadincipient)  #gets length
+      take <- sample(1:numincipient, 1)  #takes it
+      deadincipient[[totaldeadincipient + 1]] <- incipient[[take]]  #adds it
+      deadincipient[[totaldeadincipient + 1]][4] <- totaltime - t  #adds death time
+      incipient[[take]] <- NULL  #removes it
+    }
+  }
+  output<-c(good, incipient, deadgood, deadincipient)
+  if(overload==1){
+    attributes(output)<-list(overloaded="1")
+  } else {
+    attributes(output)<-list(overloaded="0")
+  }
+  return(output)  #returns a list with all taxa as above
 }
 
 # a function to repeat the above a ton of times, and store the output
