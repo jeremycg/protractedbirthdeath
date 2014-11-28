@@ -4,10 +4,10 @@ pbdsim2 <- function(pars, totaltime = 15) {
   overload=0
   good <- list()  #list of good species
   incipient <- list()  #incipients
-  good[[1]] <- c(1, totaltime, totaltime, -1, 0)  #sim starts with one good species
-  incipient[[1]] <- c(2, totaltime, -1, -1, 1)  #and one incipient species
+  good[[1]] <- c(1, totaltime, totaltime, -1, 0,0)  #sim starts with one good species
+  incipient[[1]] <- c(2, totaltime, -1, -1, 1,1)  #and one incipient species
   # an individual looks like: taxaid, birth time, time at 'good'
-  # transition,time at death, parent if one of these hasn't happened yet,
+  # transition,time at death, parent, effective parent if one of these hasn't happened yet,
   # -1 is used
   taxaid <- 3  #the taxa label of the next species
   deadgood <- list()  #all dead good individuals
@@ -40,19 +40,19 @@ pbdsim2 <- function(pars, totaltime = 15) {
       # new incipient from good
       take <- sample(1:numgood, 1)  #choose a parent
       incipient[[numincipient + 1]] <- c(taxaid, totaltime - t, -1,
-                                         -1, good[[take]][1])  #add incipient with time parent etc
+                                         -1, good[[take]][1],good[[take]][1])  #add incipient with time parent etc
       taxaid <- taxaid + 1  #increase taxaid for parental tracking
     } else if (event == 2) {
       # new good from incipient
       take <- sample(1:numincipient, 1)  #choose one
       good[[numgood + 1]] <- incipient[[take]]  #add it to good
-      good[[numgood + 1]][3] <- totaltime - t  #change its time to be good rate to t
+      good[[numgood + 1]][3] <- totaltime - t  #change its time to be good to t
       incipient[[take]] <- NULL  #delete it from incipient
     } else if (event == 3) {
       # new from incipient
       take <- sample(1:numincipient, 1)  #choose one
       incipient[[numincipient + 1]] <- c(taxaid, totaltime - t, -1,
-                                         -1, incipient[[take]][1])  #add it in
+                                         -1, incipient[[take]][1],incipient[[take]][6])  #add it in
       taxaid <- taxaid + 1
     } else if (event == 4) {
       # dead good
@@ -60,6 +60,17 @@ pbdsim2 <- function(pars, totaltime = 15) {
       take <- sample(1:numgood, 1)  #chooses one to die
       deadgood[[totaldeadgood + 1]] <- good[[take]]  #adds it
       deadgood[[totaldeadgood + 1]][4] <- totaltime - t  #adds death time
+      offspringofdead<-sapply(incipient, "[", 6)==good[[take]][6]
+      if(sum(offspringofdead)!=0){
+        ordered<-sample(which(offspringofdead),length(which(offspringofdead)))
+        chosen<-ordered[1]
+        for(i in 1:length(ordered)-1){
+          incipient[[ordered[i+1]]][6]<-incipient[[chosen]][1]
+        }
+        good[[numgood + 1]] <- incipient[[chosen]]
+        good[[numgood + 1]][3] <- totaltime - t
+        incipient[[chosen]] <- NULL
+      }
       good[[take]] <- NULL  #removes it
     } else if (event == 5) {
       # dead incipient
@@ -78,6 +89,7 @@ pbdsim2 <- function(pars, totaltime = 15) {
   }
   return(output)  #returns a list with all taxa as above
 }
+
 
 # a function to repeat the above a ton of times, and store the output
 # in a data frame
