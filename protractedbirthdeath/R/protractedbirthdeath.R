@@ -310,7 +310,7 @@ sumfunct<-function(x,time){
     if(zz$speciationcomplete==-1){
       if(zz$timeofdeath==-1){
         z$livingincipient[(zz$timeatbirth+1):1]=z$livingincipient[(zz$timeatbirth+1):1]+1}
-      else if(zz$timeofdeath!=-1){
+      else{
         if(zz$timeatbirth!=zz$timeofdeath){
           z$livingincipient[(zz$timeatbirth+1):(zz$timeofdeath+2)]=z$livingincipient[(zz$timeatbirth+1):(zz$timeofdeath+2)]+1
           z$extinctincipient[(zz$timeofdeath+1):1]=z$extinctincipient[(zz$timeofdeath+1):1]+1}
@@ -318,15 +318,15 @@ sumfunct<-function(x,time){
           z$extinctincipient[(zz$timeofdeath+1):1]=z$extinctincipient[(zz$timeofdeath+1):1]+1}
       }
     }
-    else if(zz$speciationcomplete!=-1){
+    else {
       if(zz$timeofdeath==-1){
         if(zz$timeatbirth!=zz$speciationcomplete){
           z$livingincipient[(zz$timeatbirth+1):(zz$speciationcomplete+2)]=z$livingincipient[(zz$timeatbirth+1):(zz$speciationcomplete+2)]+1
           z$livingspecies[(zz$speciationcomplete+1):1]=z$livingspecies[(zz$speciationcomplete+1):1]+1}
-        else if(zz$timeatbirth==zz$speciationcomplete){
+        else{
           z$livingspecies[(zz$speciationcomplete+1):1]=z$livingspecies[(zz$speciationcomplete+1):1]+1}
       }
-      else if(zz$timeofdeath!=-1){
+      else {
         if(zz$timeatbirth!=zz$speciationcomplete && zz$speciationcomplete!=zz$timeofdeath){
           z$livingincipient[(zz$timeatbirth+1):(zz$speciationcomplete+2)]=z$livingincipient[(zz$timeatbirth+1):(zz$speciationcomplete+2)]+1
           z$livingspecies[(zz$speciationcomplete+1):(zz$timeofdeath+2)]=z$livingspecies[(zz$speciationcomplete+1):(zz$timeofdeath+2)]+1
