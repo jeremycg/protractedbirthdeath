@@ -301,6 +301,9 @@ repsim <- function(pars,n,time=15){
     return(x)
 }
 
+#this is slow!
+#I should be able to make z a matrix, then lapply my matrix making and sum them all
+#this might be very memory costly - try it and see
 sumfunct<-function(x,time){
   z=data.frame(0:time,rep(0,time+1),rep(0,time+1),rep(0,time+1),rep(0,time+1),rep(0,time+1))
   names(z)=c("time", "livingspecies", "livingincipient", "extinctspecies", "extinctincipient", "alltaxa")
