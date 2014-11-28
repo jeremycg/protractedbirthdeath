@@ -30,7 +30,7 @@ pbdsim2 <- function(pars, totaltime = 15) {
     # speciation times number of good species etc
     denom <- sum(probs)  #we sum them for total rate per time point
     probs <- probs/denom  #and then correct to 1 for the weighting
-    t <- t - log(runif(1))/denom  #this increases time by doob gillespie
+    t=t+rexp(1,denom)  #this increases time by doob gillespie
     # it's equivalent to t=t+rexp(1,denom)
     if (t >= totaltime) {
       break
@@ -60,9 +60,10 @@ pbdsim2 <- function(pars, totaltime = 15) {
       take <- sample(1:numgood, 1)  #chooses one to die
       deadgood[[totaldeadgood + 1]] <- good[[take]]  #adds it
       deadgood[[totaldeadgood + 1]][4] <- totaltime - t  #adds death time
-      offspringofdead<-sapply(incipient, "[", 6)==good[[take]][6]
+      testparent<-good[[take]][6]
+      offspringofdead<-lapply(incipient, "[", 6)==testparent
       if(sum(offspringofdead)!=0){
-        ordered<-sample(which(offspringofdead),length(which(offspringofdead)))
+        ordered<-sample(which(offspringofdead))
         chosen<-ordered[1]
         for(i in 1:length(ordered)-1){
           incipient[[ordered[i+1]]][6]<-incipient[[chosen]][1]
