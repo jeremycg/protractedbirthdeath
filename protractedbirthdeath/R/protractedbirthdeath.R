@@ -107,7 +107,7 @@ repsim2 <- function(pars, n, time = 15) {
     }
     x <- as.data.frame(x, row.names = F)  #converts to dataframe
     names(x) <- c("taxalabel", "timeatbirth", "speciationcomplete", "timeofdeath",
-        "parent", "run")  #names outputs
+        "parent", "effective parent","run")  #names outputs
     return(x)  #output
 }
 
