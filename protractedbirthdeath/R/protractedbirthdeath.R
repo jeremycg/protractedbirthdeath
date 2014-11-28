@@ -304,8 +304,9 @@ repsim <- function(pars,n,time=15){
 sumfunct<-function(x,time){
   z=data.frame(0:time,rep(0,time+1),rep(0,time+1),rep(0,time+1),rep(0,time+1),rep(0,time+1))
   names(z)=c("time", "livingspecies", "livingincipient", "extinctspecies", "extinctincipient", "alltaxa")
+  x[,2:4]=floor(x[,2:4])
   for(i in 1:length(x[,1])){
-    zz=floor(x[i,])
+    zz=x[i,]
     if(zz$speciationcomplete==-1){
       if(zz$timeofdeath==-1){
         z$livingincipient[(zz$timeatbirth+1):1]=z$livingincipient[(zz$timeatbirth+1):1]+1}
