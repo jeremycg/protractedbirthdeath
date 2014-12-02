@@ -311,49 +311,48 @@ repsim <- function(pars,n,time=15){
 #I should be able to make z a matrix, then lapply my matrix making and sum them all
 #this might be very memory costly - try it and see
 sumfunct<-function(x,time){
-  z=data.frame(0:time,rep(0,time+1),rep(0,time+1),rep(0,time+1),rep(0,time+1),rep(0,time+1))
-  names(z)=c("time", "livingspecies", "livingincipient", "extinctspecies", "extinctincipient", "alltaxa")
-  x[,2:4]=floor(x[,2:4])
+  z=matrix(0,nrow=time+1,ncol=6)
   for(i in 1:length(x[,1])){
     zz=x[i,]
     if(zz$speciationcomplete==-1){
       if(zz$timeofdeath==-1){
-        z$livingincipient[(zz$timeatbirth+1):1]=z$livingincipient[(zz$timeatbirth+1):1]+1}
+        z[,3][(zz$timeatbirth+1):1]=z[,3][(zz$timeatbirth+1):1]+1}
       else{
         if(zz$timeatbirth!=zz$timeofdeath){
-          z$livingincipient[(zz$timeatbirth+1):(zz$timeofdeath+2)]=z$livingincipient[(zz$timeatbirth+1):(zz$timeofdeath+2)]+1
-          z$extinctincipient[(zz$timeofdeath+1):1]=z$extinctincipient[(zz$timeofdeath+1):1]+1}
+          z[,3][(zz$timeatbirth+1):(zz$timeofdeath+2)]=z[,3][(zz$timeatbirth+1):(zz$timeofdeath+2)]+1
+          z[,5][(zz$timeofdeath+1):1]=z[,5][(zz$timeofdeath+1):1]+1}
         else {
-          z$extinctincipient[(zz$timeofdeath+1):1]=z$extinctincipient[(zz$timeofdeath+1):1]+1}
+          z[,5][(zz$timeofdeath+1):1]=z[,5][(zz$timeofdeath+1):1]+1}
       }
     }
     else {
       if(zz$timeofdeath==-1){
         if(zz$timeatbirth!=zz$speciationcomplete){
-          z$livingincipient[(zz$timeatbirth+1):(zz$speciationcomplete+2)]=z$livingincipient[(zz$timeatbirth+1):(zz$speciationcomplete+2)]+1
-          z$livingspecies[(zz$speciationcomplete+1):1]=z$livingspecies[(zz$speciationcomplete+1):1]+1}
+          z[,3][(zz$timeatbirth+1):(zz$speciationcomplete+2)]=z[,3][(zz$timeatbirth+1):(zz$speciationcomplete+2)]+1
+          z[,2][(zz$speciationcomplete+1):1]=z[,2][(zz$speciationcomplete+1):1]+1}
         else{
-          z$livingspecies[(zz$speciationcomplete+1):1]=z$livingspecies[(zz$speciationcomplete+1):1]+1}
+          z[,2][(zz$speciationcomplete+1):1]=z[,2][(zz$speciationcomplete+1):1]+1}
       }
       else {
         if(zz$timeatbirth!=zz$speciationcomplete && zz$speciationcomplete!=zz$timeofdeath){
-          z$livingincipient[(zz$timeatbirth+1):(zz$speciationcomplete+2)]=z$livingincipient[(zz$timeatbirth+1):(zz$speciationcomplete+2)]+1
-          z$livingspecies[(zz$speciationcomplete+1):(zz$timeofdeath+2)]=z$livingspecies[(zz$speciationcomplete+1):(zz$timeofdeath+2)]+1
-          z$extinctspecies[(zz$timeofdeath+1):1]=z$extinctspecies[(zz$timeofdeath+1):1]+1}
+          z[,3][(zz$timeatbirth+1):(zz$speciationcomplete+2)]=z[,3][(zz$timeatbirth+1):(zz$speciationcomplete+2)]+1
+          z[,2][(zz$speciationcomplete+1):(zz$timeofdeath+2)]=z[,2][(zz$speciationcomplete+1):(zz$timeofdeath+2)]+1
+          z[,4][(zz$timeofdeath+1):1]=z[,4][(zz$timeofdeath+1):1]+1}
         else if(zz$timeatbirth!=zz$speciationcomplete && zz$speciationcomplete==zz$timeofdeath){
-          z$livingincipient[(zz$timeatbirth+1):(zz$speciationcomplete+2)]=z$livingincipient[(zz$timeatbirth+1):(zz$speciationcomplete+2)]+1
-          z$extinctspecies[(zz$timeofdeath+1):1]=z$extinctspecies[(zz$timeofdeath+1):1]+1}
+          z[,3][(zz$timeatbirth+1):(zz$speciationcomplete+2)]=z[,3][(zz$timeatbirth+1):(zz$speciationcomplete+2)]+1
+          z[,4][(zz$timeofdeath+1):1]=z[,4][(zz$timeofdeath+1):1]+1}
         else if(zz$timeatbirth==zz$speciationcomplete && zz$speciationcomplete!=zz$timeofdeath){
-          z$livingspecies[(zz$speciationcomplete+1):(zz$timeofdeath+2)]=z$livingspecies[(zz$speciationcomplete+1):(zz$timeofdeath+2)]+1
-          z$extinctspecies[(zz$timeofdeath+1):1]=z$extinctspecies[(zz$timeofdeath+1):1]+1}
+          z[,2][(zz$speciationcomplete+1):(zz$timeofdeath+2)]=z[,2][(zz$speciationcomplete+1):(zz$timeofdeath+2)]+1
+          z[,4][(zz$timeofdeath+1):1]=z[,4][(zz$timeofdeath+1):1]+1}
         else if(zz$timeatbirth==zz$speciationcomplete && zz$speciationcomplete==zz$timeofdeath){
-          z$extinctspecies[(zz$timeofdeath+1):1]=z$extinctspecies[(zz$timeofdeath+1):1]+1}
+          z[,4][(zz$timeofdeath+1):1]=z[,4][(zz$timeofdeath+1):1]+1}
       }
     }
 
   }
-  z$alltaxa=z$livingspecies+z$livingincipient
-  return(z)
+  z6=z[,2]+z[,3]
+  names(z)=c("time", "livingspecies", "livingincipient", "extinctspecies", "extinctincipient", "alltaxa")
+  return(as.data.frame(z))
 }
 #loop it over all the repeats
 #gives a data frame with all the values from the output mapped onto each run
