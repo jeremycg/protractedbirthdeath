@@ -61,7 +61,7 @@ pbdsim2 <- function(pars, totaltime = 15) {
       deadgood[[totaldeadgood + 1]] <- good[[take]]  #adds it
       deadgood[[totaldeadgood + 1]][4] <- totaltime - t  #adds death time
       testparent<-good[[take]][6]
-      offspringofdead<-vapply(incipient, "[", 6,FUN.VALUE = double(1))==testparent
+      offspringofdead<-matrix(unlist(incipient), nrow=numincipient, byrow=T)[,6]==testparent
       if(sum(offspringofdead)!=0){
         ordered<-sample(which(offspringofdead))
         chosen<-ordered[1]
