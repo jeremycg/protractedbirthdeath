@@ -70,6 +70,9 @@ pbdsim2 <- function(pars, totaltime = 15) {
           for(i in 1:length(ordered)-1){
             incipient[[ordered[i+1]]][6]<-neweffectiveparent
           }
+          #incipient<-(list(x=offspringofdead,y=incipient) %>% zip %>% map_if("x",~ update_list(., y = ~c(y[1:5],neweffectiveparent) ))%>%unzip())$y
+          #potential loop replacement
+          #but much slower for now, see how the lowliner package speeds up over time
           good[[numgood + 1]] <- incipient[[chosen]]
           good[[numgood + 1]][3] <- totaltime - t
           incipient[[chosen]] <- NULL
