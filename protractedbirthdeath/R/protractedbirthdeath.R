@@ -307,11 +307,35 @@ repsim <- function(pars,n,time=15){
     return(x)
 }
 
-#this is slow!
-#I should be able to make z a matrix, then lapply my matrix making and sum them all
-#this might be very memory costly - try it and see
+sumfunctpart1<-function(x,time=15){
+  output<-c(rep(0,time+1))
+  output[(time+1-x[[2]]):(time+2)]<-1
+  if(x[[3]]>=x[[4]]){
+    output[(time+1-x[[3]]):(time+2)]<-2
+    output[(time+1-x[[4]]):(time+2)]<-3
+  } else{
+    output[(time+1-x[[4]]):(time+2)]<-4
+  }
+  return(output[0:time+1])
+}
+
+sumfunctpart2<-function(downcol){
+  good<-sum(downcol==1)
+  incipient<-sum(downcol==2)
+  deadgood<-sum(downcol==3)
+  deadincipient<-sum(downcol==4)
+  return(c(good,incipient,deadgood,deadincipient))
+}
+
+
+sumfunct2<-function(df){
+  df[2:4]<-floor(df[2:4])
+  return(apply(apply(df,1,sumfunctpart1),1,sumfunctpart2))
+}
+
 sumfunct<-function(x,time){
   z=matrix(0,nrow=time+1,ncol=6)
+  z[,1]=seq(from=0,to=time)
   for(i in 1:length(x[,1])){
     zz=x[i,]
     if(zz$speciationcomplete==-1){
@@ -350,9 +374,10 @@ sumfunct<-function(x,time){
     }
 
   }
-  z6=z[,2]+z[,3]
+  z[,6]=z[,2]+z[,3]
+  z=as.data.frame(z)
   names(z)=c("time", "livingspecies", "livingincipient", "extinctspecies", "extinctincipient", "alltaxa")
-  return(as.data.frame(z))
+  return(z)
 }
 #loop it over all the repeats
 #gives a data frame with all the values from the output mapped onto each run
