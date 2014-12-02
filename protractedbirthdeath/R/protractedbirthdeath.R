@@ -320,8 +320,8 @@ sumfunctpart1<-function(x,time=15){
 }
 
 sumfunctpart2<-function(downcol){
-  good<-sum(downcol==1)
-  incipient<-sum(downcol==2)
+  incipient<-sum(downcol==1)
+  good<-sum(downcol==2)
   deadgood<-sum(downcol==3)
   deadincipient<-sum(downcol==4)
   return(c(good,incipient,deadgood,deadincipient))
