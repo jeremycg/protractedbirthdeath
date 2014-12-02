@@ -40,7 +40,7 @@ pbdsim2 <- function(pars, totaltime = 15) {
       # new incipient from good
       take <- sample(1:numgood, 1)  #choose a parent
       incipient[[numincipient + 1]] <- c(taxaid, totaltime - t, -1,
-                                         -1, good[[take]][1],good[[take]][1])  #add incipient with time parent etc
+                                         -1, rep(good[[take]][1],2))  #add incipient with time parent etc
       taxaid <- taxaid + 1  #increase taxaid for parental tracking
     } else if (event == 2) {
       # new good from incipient
@@ -60,17 +60,20 @@ pbdsim2 <- function(pars, totaltime = 15) {
       take <- sample(1:numgood, 1)  #chooses one to die
       deadgood[[totaldeadgood + 1]] <- good[[take]]  #adds it
       deadgood[[totaldeadgood + 1]][4] <- totaltime - t  #adds death time
-      testparent<-good[[take]][6]
-      offspringofdead<-matrix(unlist(incipient), nrow=numincipient, byrow=T)[,6]==testparent
-      if(sum(offspringofdead)!=0){
-        ordered<-sample(which(offspringofdead))
-        chosen<-ordered[1]
-        for(i in 1:length(ordered)-1){
-          incipient[[ordered[i+1]]][6]<-incipient[[chosen]][1]
+      if(numincipient>0){
+        testparent<-good[[take]][6]
+        offspringofdead<-matrix(unlist(incipient), nrow=numincipient, byrow=T)[,6]==testparent
+        if(sum(offspringofdead)!=0){
+          ordered<-sample(which(offspringofdead))
+          chosen<-ordered[1]
+          neweffectiveparent<-incipient[[chosen]][1]
+          for(i in 1:length(ordered)-1){
+            incipient[[ordered[i+1]]][6]<-neweffectiveparent
+          }
+          good[[numgood + 1]] <- incipient[[chosen]]
+          good[[numgood + 1]][3] <- totaltime - t
+          incipient[[chosen]] <- NULL
         }
-        good[[numgood + 1]] <- incipient[[chosen]]
-        good[[numgood + 1]][3] <- totaltime - t
-        incipient[[chosen]] <- NULL
       }
       good[[take]] <- NULL  #removes it
     } else if (event == 5) {
