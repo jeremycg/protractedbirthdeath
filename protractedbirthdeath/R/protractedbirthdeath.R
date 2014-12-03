@@ -215,29 +215,10 @@ timegivengood <- function(df) {
 # ok, now so ratio of good vs incipient. Let's just return the number
 # of each so it's usable in other stuff
 numgoodincip <- function(df) {
-    liveincip <- 0
-    livegood <- 0
-    deadincip <- 0
-    deadgood <- 0
-    for (i in 1:length(df$timeatbirth)) {
-        # for each one if it didnt die if it completed speciation
-        if (df$timeofdeath[i] == -1) {
-            if (df$speciationcomplete[i] != -1) {
-                livegood <- livegood + 1  #its a good species
-            } else if (df$speciationcomplete[i] == -1) {
-                # if it didnt complete speciation
-                liveincip <- liveincip + 1  #its an incipient species
-            }
-        } else if (df$timeofdeath[i] != -1) {
-            # if it died and it completed speciation
-            if (df$speciationcomplete[i] != -1) {
-                deadgood <- deadgood + 1  #its a dead good species
-            } else if (df$speciationcomplete[i] == -1) {
-                # if it didnt complete speciation
-                deadincip <- deadincip + 1  #its a dead incipient
-            }
-        }
-    }
+    liveincip <- sum(df$timeofdeath==-1&df$speciationcomplete==-1)
+    livegood <- sum(df$timeofdeath==-1&df$speciationcomplete!=-1)
+    deadincip <- sum(df$timeofdeath!=-1&df$speciationcomplete==-1)
+    deadgood <- sum(df$timeofdeath!=-1&df$speciationcomplete!=-1)
     return(c(liveincip, livegood, deadincip, deadgood))  #returns it as a list
 }
 
@@ -356,7 +337,7 @@ dplyframe<-function(x){
 
 #put it all together
 summaryrepsim<-function(pars,n,time){
-  dplyframe(loopfunct(repsim2(pars,n,time),n,time))
+  dplyframe(loopfunct(repsim2(pars,n,time),time))
   }
 
 subsetdata<-function(data,var1,val1,var2,val2,var3,val3){
