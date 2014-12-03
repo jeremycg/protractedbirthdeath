@@ -328,32 +328,18 @@ sumfunctpart2<-function(downcol){
 }
 
 
-sumfunct<-function(df){
+sumfunct<-function(df,time=15){
   df[2:4]<-floor(df[2:4])
-  out<-as.data.frame(t(apply(apply(df,1,sumfunctpart1),1,sumfunctpart2)))
+  out<-as.data.frame(t(apply(apply(df,1,sumfunctpart1,time=time),1,sumfunctpart2)))
   names(out)<-c("livingspecies","livingincipient","extinctspecies","extinctincipient")
   out$time=seq(from=15,to=0)
   out$alltaxa<-out[,1]+out[,2]
   return(out)
 }
 
-
-#loop it over all the repeats
-#gives a data frame with all the values from the output mapped onto each run
-loopfunct<-function(x,n,time=15){
-  holder=c()
-  for(i in 1:n){
-    tempout=sumfunct(x[which(x$run==i),],time)
-    tempout$run=i
-    holder=rbind(holder,tempout)
-    }
-  return(holder)
-  }
-
-#ddply solution - much slower? weird
-#loopfunct<-function(x,time=15){
-#	ddply(x,.(run),function(df){sumfunct(df,time)})
-#	}
+loopfunct<-function(x,time=15){
+ ddply(x,.(run),function(df){sumfunct(df,time)})
+}
 
 #get means and sd!
 dplyframe<-function(x){
