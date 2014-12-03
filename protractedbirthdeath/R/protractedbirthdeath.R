@@ -201,15 +201,8 @@ countpersistance <- function(df, t1 = 10, t2 = 5) {
 # ok, so now let's try given it is a good species, how long did it
 # take? input is a single run
 timegivengood <- function(df) {
-    output <- c()  #clears output to hold
-    for (i in 1:length(df$speciationcomplete)) {
-        # for each one if it's a good species, but not our starting one
-        if (df$speciationcomplete[i] != 15 && df$speciationcomplete[i] !=
-            -1) {
-            output <- c(output, df$timeatbirth[i] - df$speciationcomplete[i])  #how long did it take?
-        }
-    }
-    return(output)
+  out=df$timeatbirth - df$speciationcomplete
+  return(out[df$speciationcomplete != 15 & df$speciationcomplete !=-1])
 }
 
 # ok, now so ratio of good vs incipient. Let's just return the number
