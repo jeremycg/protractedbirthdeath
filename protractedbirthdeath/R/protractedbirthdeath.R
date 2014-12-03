@@ -123,13 +123,7 @@ combinelists<-function(x){
 # a function to make a newick tree text from a given output is not of
 # class phy - need to do read.tree(text=treemaker(x)) for that
 treemaker <- function(x) {
-    for (i in 1:length(x[, 1])) {
-        # for each taxa
-        if (x[i, ]$timeofdeath == -1)
-            {
-                x[i, ]$timeofdeath <- 0
-            }  #changes -1s to 0s
-    }
+    x[x$timeofdeath==-1,]$timeofdeath<-0
     x$label <- x$taxalabel  #makes a new column to hold the tree strings
     while (length(x[, 1]) >= 2) {
         # while there are more than two taxa
@@ -184,18 +178,13 @@ sisterlengths <- function(working) {
 # y.a then today and see what percentage of species still exists input
 # is single run, then time 1, and time 2
 countpersistance <- function(df, t1 = 10, t2 = 5) {
-    for (i in 1:length(df$timeofdeath)) {
-        # for each taxa correct time of death to now
-        if (df$timeofdeath[i] == -1) {
-            df$timeofdeath[i] <- 0
-        }
-    }
-    z1 <- df[which(df$timeatbirth >= t1 & df$timeofdeath <= t1), ]  #z1 is alive at t1
-    z2 <- z1[which(z1$timeofdeath <= t2), ]  #z2 finds those of z1 that are alive at t2
-    z3 <- df[which(df$timeatbirth >= t2 & df$timeofdeath <= t2), ]  #z2 is those alive at t2
-    output <- (c(length(z1[, 1]), length(z2[, 1]), length(z3[, 1])))  #binds them together
-    names(output) <- c("alivet1", "aliveboth", "alivet2")  #names them
-    return(output)
+  df[df$timeofdeath==-1,]$timeofdeath<-0
+  z1 <- df[which(df$timeatbirth >= t1 & df$timeofdeath <= t1), ]  #z1 is alive at t1
+  z2 <- z1[which(z1$timeofdeath <= t2), ]  #z2 finds those of z1 that are alive at t2
+  z3 <- df[which(df$timeatbirth >= t2 & df$timeofdeath <= t2), ]  #z2 is those alive at t2
+  output <- (c(length(z1[, 1]), length(z2[, 1]), length(z3[, 1])))  #binds them together
+  names(output) <- c("alivet1", "aliveboth", "alivet2")  #names them
+  return(output)
 }
 
 # ok, so now let's try given it is a good species, how long did it
