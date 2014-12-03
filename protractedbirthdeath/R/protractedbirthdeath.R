@@ -101,21 +101,23 @@ pbdsim2 <- function(pars, totaltime = 15) {
 # a function to repeat the above a ton of times, and store the output
 # in a data frame
 repsim2 <- function(pars, n, time = 15) {
-    x <- c()  #holding for output
-    i <- 1  #repeat number
-    while (i <= n) {
-        y <- c()  #temp holding
-        for (j in pbdsim2(pars, time)) {
-            y <- rbind(y, j)
-        }  #run the sim
-        y <- cbind(y, i)  #add on the run number column
-        x <- rbind(x, y)  #add it all to output
-        i <- i + 1  #increase repeats
-    }
-    x <- as.data.frame(x, row.names = F)  #converts to dataframe
-    names(x) <- c("taxalabel", "timeatbirth", "speciationcomplete", "timeofdeath",
-        "parent", "effective parent","run")  #names outputs
-    return(x)  #output
+  output<-c()
+  x <- rlply(n,pbdsim2(pars,time))
+  xx<-lapply(x,combinelists)
+  lengths<-lapply(xx,nrow)
+  zzz<-do.call(rbind.data.frame, xx)
+  labels<-c()
+  for(i in 1:n){
+    labels=c(labels,rep(i,lengths[i]))
+  }
+  zzz[,7]<-labels
+  names(zzz)<- c("taxalabel", "timeatbirth", "speciationcomplete", "timeofdeath",
+                           "parent", "effective parent","run")
+  return(zzz)
+}
+
+combinelists<-function(x){
+  data.frame(matrix(unlist(x), nrow=length(x), byrow=T))
 }
 
 # a function to make a newick tree text from a given output is not of
