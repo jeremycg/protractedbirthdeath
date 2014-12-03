@@ -328,57 +328,16 @@ sumfunctpart2<-function(downcol){
 }
 
 
-sumfunct2<-function(df){
+sumfunct<-function(df){
   df[2:4]<-floor(df[2:4])
-  return(apply(apply(df,1,sumfunctpart1),1,sumfunctpart2))
+  out<-as.data.frame(t(apply(apply(df,1,sumfunctpart1),1,sumfunctpart2)))
+  names(out)<-c("livingspecies","livingincipient","extinctspecies","extinctincipient")
+  out$time=seq(from=15,to=0)
+  out$alltaxa<-out[,1]+out[,2]
+  return(out)
 }
 
-sumfunct<-function(x,time){
-  z=matrix(0,nrow=time+1,ncol=6)
-  z[,1]=seq(from=0,to=time)
-  for(i in 1:length(x[,1])){
-    zz=x[i,]
-    if(zz$speciationcomplete==-1){
-      if(zz$timeofdeath==-1){
-        z[,3][(zz$timeatbirth+1):1]=z[,3][(zz$timeatbirth+1):1]+1}
-      else{
-        if(zz$timeatbirth!=zz$timeofdeath){
-          z[,3][(zz$timeatbirth+1):(zz$timeofdeath+2)]=z[,3][(zz$timeatbirth+1):(zz$timeofdeath+2)]+1
-          z[,5][(zz$timeofdeath+1):1]=z[,5][(zz$timeofdeath+1):1]+1}
-        else {
-          z[,5][(zz$timeofdeath+1):1]=z[,5][(zz$timeofdeath+1):1]+1}
-      }
-    }
-    else {
-      if(zz$timeofdeath==-1){
-        if(zz$timeatbirth!=zz$speciationcomplete){
-          z[,3][(zz$timeatbirth+1):(zz$speciationcomplete+2)]=z[,3][(zz$timeatbirth+1):(zz$speciationcomplete+2)]+1
-          z[,2][(zz$speciationcomplete+1):1]=z[,2][(zz$speciationcomplete+1):1]+1}
-        else{
-          z[,2][(zz$speciationcomplete+1):1]=z[,2][(zz$speciationcomplete+1):1]+1}
-      }
-      else {
-        if(zz$timeatbirth!=zz$speciationcomplete && zz$speciationcomplete!=zz$timeofdeath){
-          z[,3][(zz$timeatbirth+1):(zz$speciationcomplete+2)]=z[,3][(zz$timeatbirth+1):(zz$speciationcomplete+2)]+1
-          z[,2][(zz$speciationcomplete+1):(zz$timeofdeath+2)]=z[,2][(zz$speciationcomplete+1):(zz$timeofdeath+2)]+1
-          z[,4][(zz$timeofdeath+1):1]=z[,4][(zz$timeofdeath+1):1]+1}
-        else if(zz$timeatbirth!=zz$speciationcomplete && zz$speciationcomplete==zz$timeofdeath){
-          z[,3][(zz$timeatbirth+1):(zz$speciationcomplete+2)]=z[,3][(zz$timeatbirth+1):(zz$speciationcomplete+2)]+1
-          z[,4][(zz$timeofdeath+1):1]=z[,4][(zz$timeofdeath+1):1]+1}
-        else if(zz$timeatbirth==zz$speciationcomplete && zz$speciationcomplete!=zz$timeofdeath){
-          z[,2][(zz$speciationcomplete+1):(zz$timeofdeath+2)]=z[,2][(zz$speciationcomplete+1):(zz$timeofdeath+2)]+1
-          z[,4][(zz$timeofdeath+1):1]=z[,4][(zz$timeofdeath+1):1]+1}
-        else if(zz$timeatbirth==zz$speciationcomplete && zz$speciationcomplete==zz$timeofdeath){
-          z[,4][(zz$timeofdeath+1):1]=z[,4][(zz$timeofdeath+1):1]+1}
-      }
-    }
 
-  }
-  z[,6]=z[,2]+z[,3]
-  z=as.data.frame(z)
-  names(z)=c("time", "livingspecies", "livingincipient", "extinctspecies", "extinctincipient", "alltaxa")
-  return(z)
-}
 #loop it over all the repeats
 #gives a data frame with all the values from the output mapped onto each run
 loopfunct<-function(x,n,time=15){
@@ -409,7 +368,7 @@ dplyframe<-function(x){
 
 #put it all together
 summaryrepsim<-function(pars,n,time){
-  dplyframe(loopfunct(repsim(pars,n,time),n,time))
+  dplyframe(loopfunct(repsim2(pars,n,time),n,time))
   }
 
 subsetdata<-function(data,var1,val1,var2,val2,var3,val3){
