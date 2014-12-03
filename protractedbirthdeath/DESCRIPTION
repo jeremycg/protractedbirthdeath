@@ -4,8 +4,6 @@ Version: 0.1
 Authors@R: "Jeremy Gray <jeremycgray@gmail.com> [aut, cre]"
 Description: models speciation using incipient speciation
 Depends:
-    R (>= 3.0.3)
-Imports:
     plyr,
     dplyr,
     ggplot2
