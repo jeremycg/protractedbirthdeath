@@ -6,6 +6,7 @@ Description: models speciation using incipient speciation
 Depends:
     plyr,
     dplyr,
-    ggplot2
+    ggplot2,
+    RColorBrewer
 License: MIT
 LazyData: true
