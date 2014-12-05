@@ -28,6 +28,7 @@ pbdsim2 <- function(pars, totaltime = 15) {
                  numincipient, pars[4] * numgood, pars[5] * numincipient)
     # probs are the probability of each event happening so its prob good
     # speciation times number of good species etc
+    if(sum(probs)==0){break}
     denom <- sum(probs)  #we sum them for total rate per time point
     probs <- probs/denom  #and then correct to 1 for the weighting
     t=t+rexp(1,denom)  #this increases time by doob gillespie
