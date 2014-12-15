@@ -106,7 +106,7 @@ repsim2 <- function(pars, n, time = 15) {
   x <- rlply(n,pbdsim2(pars,time))
   xx<-lapply(x,combinelists)
   lengths<-lapply(xx,nrow)
-  zzz<-do.call(rbind.data.frame, xx)
+  zzz<-rbind_all(xx)
   labels<-c()
   for(i in 1:n){
     labels=c(labels,rep(i,lengths[i]))
