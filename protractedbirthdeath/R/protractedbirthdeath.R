@@ -366,27 +366,22 @@ tau<-function(l2,l3,m2){
 
 
 
-tauloop<-function(x,variable){
-  holding=c()
-  if(variable=="incipext"){
-    for(i in seq(from=0.05, to=1,by=0.01)){
-      for(j in seq(from=0.05, to=1,by=0.01)){
-        holding=rbind(holding,c(i,j,tau(i,j,x)))
+taufunct<-function(var2,x,y,fixed){
+  if(var2=="incipext"){
+    return(tau(x,y,fixed))
+    } else if(var2=="incipsp"){
+      return(tau(x,fixed,y))
+      } else if(var2=="speccomp"){
+        return(tau(fixed,x,y))
       }
     }
-  }	else if(variable=="incipsp"){
-    for(i in seq(from=0.05, to=1,by=0.01)){
-      for(j in seq(from=0.05, to=1,by=0.01)){
-        holding=rbind(holding,c(i,j,tau(i,x,j)))
-      }
-    }
-  }	else if(variable=="speccomp"){
-    for(i in seq(from=0.05, to=1,by=0.01)){
-      for(j in seq(from=0.05, to=1,by=0.01)){
-        holding=rbind(holding,c(i,j,tau(x,i,j)))
-      }
-    }
-  }
+
+tauloop2<-function(x,var){
+  a<-seq(from=0.05,to=1,by=0.01)
+  b<-seq(from=0.05,to=1,by=0.01)
+  holding<-melt(outer(a,b,FUN="taufunct",var2=var,fixed=x))
+  holding[,1]<-0.01*holding[,1]+0.04
+  holding[,2]<-0.01*holding[,2]+0.04
   holding=as.data.frame(holding)
   names(holding)=c("x","y","z")
   holding=na.omit(holding)
