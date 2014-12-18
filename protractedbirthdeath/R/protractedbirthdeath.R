@@ -201,6 +201,8 @@ numgoodincip <- function(df) {
     return(c(liveincip, livegood, deadincip, deadgood))  #returns it as a list
 }
 
+#deprecated
+#use pddsim2
 pbdsim=function(pars,totaltime){
   good=list()
   incipient=list()
@@ -253,7 +255,9 @@ pbdsim=function(pars,totaltime){
   return(c(good,incipient,deadgood,deadincipient))
 }
 
-
+#this is deprecated
+#slow, and leaves stuff out
+#use repsim2
 repsim <- function(pars,n,time=15){
   x=c()
     i=1
