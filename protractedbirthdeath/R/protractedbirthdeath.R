@@ -312,12 +312,12 @@ dplyframe<-function(x){
   names(z)=c("time","meanlivingsp","meanlivingin","meanextsp","meanextin","meantaxa",
     "sdlivingsp","sdlivingin","sdextsp","sdextin","sdtaxa")
   return(z)
-  }
+}
 
 #put it all together
 summaryrepsim<-function(pars,n,time){
   dplyframe(loopfunct(repsim2(pars,n,time),time))
-  }
+}
 
 subsetdata<-function(data,var1,val1,var2,val2,var3,val3){
   data=as.data.frame(data)
@@ -369,12 +369,12 @@ tau<-function(l2,l3,m2){
 taufunct<-function(var2,x,y,fixed){
   if(var2=="incipext"){
     return(tau(x,y,fixed))
-    } else if(var2=="incipsp"){
-      return(tau(x,fixed,y))
-      } else if(var2=="speccomp"){
-        return(tau(fixed,x,y))
-      }
-    }
+  } else if(var2=="incipsp"){
+    return(tau(x,fixed,y))
+  } else if(var2=="speccomp"){
+    return(tau(fixed,x,y))
+  }
+}
 
 tauloop2<-function(x,var){
   a<-seq(from=0.05,to=1,by=0.01)
