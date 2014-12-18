@@ -7,6 +7,7 @@ Depends:
     plyr,
     dplyr,
     ggplot2,
-    RColorBrewer
+    RColorBrewer,
+    reshape2
 License: MIT
 LazyData: true
