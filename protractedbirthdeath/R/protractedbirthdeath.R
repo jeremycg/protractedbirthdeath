@@ -120,8 +120,7 @@ combinelists<-function(x){
 # a function to make a newick tree text from a given output is not of
 # class phy - need to do read.tree(text=treemaker(x)) for that
 treemaker <- function(x) {
-    x<-as.data.frame(x)
-    x[x$timeofdeath==-1,]$timeofdeath<-0
+    x$timeofdeath[x$timeofdeath==-1]<-0
     x$label <- x$taxalabel  #makes a new column to hold the tree strings
     while (length(x[, 1]) >= 2) {
         # while there are more than two taxa
