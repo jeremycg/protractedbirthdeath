@@ -32,7 +32,7 @@ pbdsim2 <- function(pars, totaltime = 15) {
     denom <- sum(probs)  #we sum them for total rate per time point
     probs <- probs/denom  #and then correct to 1 for the weighting
     t=t+rexp(1,denom)  #this increases time by doob gillespie
-    # it's equivalent to t=t+rexp(1,denom)
+    # it's equivalent to t<-t-log(runif(1))/denom, but a little faster
     if (t >= totaltime) {
       break
     }  #if we just went over time, break
