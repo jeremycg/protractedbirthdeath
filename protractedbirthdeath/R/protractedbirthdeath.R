@@ -110,7 +110,7 @@ repsim2 <- function(pars, n, time = 15) {
   zzz[,7]<-unlist(mapply(rep,1:n,lengths))
   names(zzz)<- c("taxalabel", "timeatbirth", "speciationcomplete", "timeofdeath",
                            "parent", "effective parent","run")
-  return(zzz)
+  return(as.data.frame(zzz))
 }
 
 combinelists<-function(x){
