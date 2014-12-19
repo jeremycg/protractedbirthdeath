@@ -107,10 +107,10 @@ repsim2 <- function(pars, n, time = 15) {
   xx<-lapply(x,combinelists)
   lengths<-lapply(xx,nrow)
   zzz<-rbind_all(xx)
-  zzz[,7]<-unlist(mapply(rep,1:n,lengths))
+  zzz[,7]<-unlist(mapply(rep,1:n,lengths,SIMPLIFY = F))
   names(zzz)<- c("taxalabel", "timeatbirth", "speciationcomplete", "timeofdeath",
                            "parent", "effective parent","run")
-  return(as.data.frame(zzz))
+  return(zzz)
 }
 
 combinelists<-function(x){
