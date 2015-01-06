@@ -26,11 +26,11 @@ shinyServer(function(input, output) {
   })
 
 	output$Plot3 <- renderPlot({
-	data2<-summaryrepsim(c(input$goodrate,input$compprate,input$inciprate,input$extgood,input$extincip),15,15)
+	data2<-summaryrepsim2(c(input$goodrate,input$compprate,input$inciprate,input$extgood,input$extincip),15,15)
 	print(plotsim(data2))
 	})
 	output$Plot4 <- renderPlot({
-	data2<-summaryrepsim(c(input$goodrate2,input$compprate2,input$inciprate2,input$extgood2,input$extincip2),15,15)
+	data2<-summaryrepsim2(c(input$goodrate2,input$compprate2,input$inciprate2,input$extgood2,input$extincip2),15,15)
 	print(plotsim(data2))
 	})
 	output$Plot5 <- renderPlot({
@@ -56,7 +56,7 @@ shinyServer(function(input, output) {
 	})
 	output$Plot12<- renderPlot({
 	x1<-repsim2(c(input$goodrate,input$compprate,input$inciprate,input$extgood,input$extincip),1,15)
-	x2<-treemaker(x1)
+	x2<-treemaker2(x1)
 	plot(read.tree(text=x2))
 	})
 	output$Plot13<- renderPlot({
