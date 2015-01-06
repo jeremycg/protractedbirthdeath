@@ -152,11 +152,37 @@ treemaker <- function(x) {
     return(paste(x$label, ";", sep = ""))  #returns the string, with the required tailing ;
 }
 
+treemaker2<-function(z){
+  z$timeofdeath[z$timeofdeath==-1]<-0
+  z$label<-z$taxalabel
+  while(nrow(z)>1){
+    z<-removeyoungest(z)
+  }
+  paste(z$label, ";", sep = "")
+}
+
+removeyoungest<-function(z){
+  z$run<-as.numeric(z$run)
+  zdeadtest<-z%>%group_by(parent) %>% filter(rank(timeatbirth) == 1)
+  zdead<-zdeadtest[!(zdeadtest$taxalabel %in% z$parent),]
+  z<-z[!(z$taxalabel %in% zdead$taxalabel),]
+  parents<-z[z$taxalabel %in% zdead$parent,]
+  z<-z[!z$taxalabel %in% zdead$parent,]
+  zdead<-zdead[with(zdead, order(parent)), ]
+  parents<-parents[with(parents, order(taxalabel)), ]
+  parents$label <- paste("(", parents$label, ":", zdead$timeatbirth -
+  parents$timeofdeath, ",", zdead$label, ":", zdead$timeatbirth -
+  zdead$timeofdeath, ")", sep = "")
+  parents$timeofdeath<-zdead$timeatbirth
+  z<-rbind.fill(z,parents)
+  z
+}
+
 # so far: how close is each species sister taxa? as a plyrable function
 # looks at all extant taxa finds closest relative branch time - single,
 # not both run on a single run from repsim2
 sisterlengths <- function(working) {
-    phy <- treemaker(working)  #make a tree
+    phy <- treemaker2(working)  #make a tree
     phy1 <- read.tree(text = phy)  #make it of class phy
     if (sum(which(working$timeofdeath == -1)) <= 1) {
         # if we had no taxa at the end
