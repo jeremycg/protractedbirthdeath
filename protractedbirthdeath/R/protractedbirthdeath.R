@@ -163,8 +163,8 @@ treemaker2<-function(z){
 
 removeyoungest<-function(z){
   z$run<-as.numeric(z$run)
-  zdeadtest<-z%>%group_by(parent) %>% filter(rank(timeatbirth) == 1)
-  zdead<-zdeadtest[!(zdeadtest$taxalabel %in% z$parent),]
+  zdeadtest<-z[!(z$taxalabel %in% z$parent),]
+  zdead<-zdeadtest %>% group_by(parent) %>% filter(timeatbirth==min(timeatbirth))
   z<-z[!(z$taxalabel %in% zdead$taxalabel),]
   parents<-z[z$taxalabel %in% zdead$parent,]
   z<-z[!z$taxalabel %in% zdead$parent,]
@@ -175,7 +175,7 @@ removeyoungest<-function(z){
   zdead$timeofdeath, ")", sep = "")
   parents$timeofdeath<-zdead$timeatbirth
   z<-rbind.fill(z,parents)
-  z
+  return(z)
 }
 
 # so far: how close is each species sister taxa? as a plyrable function
