@@ -171,8 +171,8 @@ removeyoungest<-function(z){
   zdead<-zdead[with(zdead, order(parent)), ]
   parents<-parents[with(parents, order(taxalabel)), ]
   parents$label <- paste("(", parents$label, ":", zdead$timeatbirth -
-  parents$timeofdeath, ",", zdead$label, ":", zdead$timeatbirth -
-  zdead$timeofdeath, ")", sep = "")
+    parents$timeofdeath, ",", zdead$label, ":", zdead$timeatbirth -
+    zdead$timeofdeath, ")", sep = "")
   parents$timeofdeath<-zdead$timeatbirth
   z<-rbind.fill(z,parents)
   return(z)
