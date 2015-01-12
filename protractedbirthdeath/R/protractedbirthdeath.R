@@ -203,7 +203,9 @@ sisterlengths <- function(working) {
 # is single run, then time 1, and time 2
 countpersistance <- function(df, t1 = 10, t2 = 5) {
   df<-as.data.frame(df)
-  df[df$timeofdeath==-1,]$timeofdeath<-0
+  if(-1 %in% df$timeofdeath){
+    df[df$timeofdeath==-1,]$timeofdeath<-0
+  }
   z1 <- df[which(df$timeatbirth >= t1 & df$timeofdeath <= t1), ]  #z1 is alive at t1
   z2 <- z1[which(z1$timeofdeath <= t2), ]  #z2 finds those of z1 that are alive at t2
   z3 <- df[which(df$timeatbirth >= t2 & df$timeofdeath <= t2), ]  #z2 is those alive at t2
