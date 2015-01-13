@@ -1,5 +1,14 @@
-# this is the meat of the functions, actually runs the sims. takes a
-# list of 5 parameters and a time
+#' Simulate speciation by a protracted birth death process.
+#' @param a vector of 5 parameters, and a time: c(speciation rate of good species,
+#'   speciation rate of incipient species, completion rate, death rate of
+#'   good species and death rate of incipient species). The time is following
+#' @return a list with each taxa as its own entry, with birth and death times
+#'   has an atrribute overloaded=1 if too many species were formed
+#' @seealso \code{\link{repsim2}} which wraps this function and does repeats
+#' @export
+#' @examples
+#' pbdsim2(c(0.1,0.1,0.1,0.1,0.1),15)
+#' pbdsim2(c(0.2,0.2,0.2,0.1,0.1),15)
 pbdsim2 <- function(pars, totaltime = 15) {
   overload=0
   good <- list()  #list of good species
@@ -98,9 +107,19 @@ pbdsim2 <- function(pars, totaltime = 15) {
   return(output)  #returns a list with all taxa as above
 }
 
-
-# a function to repeat the above a ton of times, and store the output
-# in a data frame
+#' Repeat \code{\link{pbdsim2}} multiple times and output in a dataframe.
+#' @param a vector of 5 parameters, a repeat number and a time:
+#'   c(speciation rate of good species,
+#'   speciation rate of incipient species, completion rate, death rate of
+#'   good species and death rate of incipient species). The time is following
+#' @return a dataframe with each taxa as its own entry, with birth and death times
+#' @seealso \code{\link{pbdsim2}} which is the single repeat version,
+#'   \code{\link{summaryrepsim}} which takes averages of repeats
+#' @export
+#' @examples
+#' repsim2(c(0.1,0.1,0.1,0.1,0.1),15,15)
+#' repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15)
+#' summaryrepsim(c(0.1,0.1,0.1,0.1,0.1),15,15)
 repsim2 <- function(pars, n, time = 15) {
   output<-c()
   x <- rlply(n,pbdsim2(pars,time))
@@ -117,8 +136,15 @@ combinelists<-function(x){
   data.frame(matrix(unlist(x), nrow=length(x), byrow=T))
 }
 
-# a function to make a newick tree text from a given output is not of
-# class phy - need to do read.tree(text=treemaker(x)) for that
+#' Takes a single inputted run and makes a (text) tree.
+#' @param a single run from repsim2
+#' @return a string which can be read into ape using read.tree
+#' @seealso \code{\link{repsim2}} which produces the inputs
+#' @export
+#' @examples
+#' x<-treemaker(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15))
+#' phy<-read.tree(text=x)
+#' plot(phy)
 treemaker <- function(x) {
     x<-as.data.frame(x)
     x$timeofdeath[x$timeofdeath==-1]<-0
@@ -152,6 +178,16 @@ treemaker <- function(x) {
     return(paste(x$label, ";", sep = ""))  #returns the string, with the required tailing ;
 }
 
+#' Takes a single inputted run and makes a (text) tree.
+#' much faster than treemaker
+#' @param a single run from repsim2
+#' @return a string which can be read into ape using read.tree
+#' @seealso \code{\link{repsim2}} which produces the inputs
+#' @export
+#' @examples
+#' x<-treemaker2(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15))
+#' phy<-read.tree(text=x)
+#' plot(phy)
 treemaker2<-function(z){
   z$timeofdeath[z$timeofdeath==-1]<-0
   z$label<-z$taxalabel
@@ -178,9 +214,13 @@ removeyoungest<-function(z){
   return(z)
 }
 
-# so far: how close is each species sister taxa? as a plyrable function
-# looks at all extant taxa finds closest relative branch time - single,
-# not both run on a single run from repsim2
+#' Finds branchlength to closest extant sister taxa.
+#' @param a single run from repsim2
+#' @return a list of branch lengths
+#' @seealso \code{\link{repsim2}} which produces the inputs
+#' @export
+#' @examples
+#' sisterlengths(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15))
 sisterlengths <- function(working) {
     phy <- treemaker2(working)  #make a tree
     phy1 <- read.tree(text = phy)  #make it of class phy
@@ -195,12 +235,15 @@ sisterlengths <- function(working) {
     # lead to species, not nodes so we want the ones that are less than the
     # number of tips
 }
-# output is a list - it depends on number of species, so can't be a
-# dataframe
 
-# next, a function for 'time slicing' we want to go at say 10 million
-# y.a then today and see what percentage of species still exists input
-# is single run, then time 1, and time 2
+
+#' Finds persistance of taxa over time.
+#' @param a single run from repsim2, and two timepoints to check
+#' @return a vector of 3 values - those alive at t1, both and t2
+#' @seealso \code{\link{repsim2}} which produces the inputs
+#' @export
+#' @examples
+#' countpersistance(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15),10,5)
 countpersistance <- function(df, t1 = 10, t2 = 5) {
   df<-as.data.frame(df)
   df$timeofdeath[df$timeofdeath==-1]<-0
@@ -212,15 +255,25 @@ countpersistance <- function(df, t1 = 10, t2 = 5) {
   return(output)
 }
 
-# ok, so now let's try given it is a good species, how long did it
-# take? input is a single run
+#' Finds time to be a good species.
+#' @param a single run from repsim2
+#' @return a vector of times - equal to number of good species
+#' @seealso \code{\link{repsim2}} which produces the inputs
+#' @export
+#' @examples
+#' timegivengood(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15),10,5)
 timegivengood <- function(df) {
   out=df$timeatbirth - df$speciationcomplete
   return(out[df$speciationcomplete != 15 & df$speciationcomplete !=-1])
 }
 
-# ok, now so ratio of good vs incipient. Let's just return the number
-# of each so it's usable in other stuff
+#' Finds numbers of each possible outcome at end of simulation.
+#' @param a single run from repsim2
+#' @return a vector of 4 named numbers - dead and live good and incipient taxa
+#' @seealso \code{\link{repsim2}} which produces the inputs
+#' @export
+#' @examples
+#' numgoodincip(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15),10,5)
 numgoodincip <- function(df) {
     liveincip <- sum(df$timeofdeath==-1&df$speciationcomplete==-1)
     livegood <- sum(df$timeofdeath==-1&df$speciationcomplete!=-1)
@@ -346,10 +399,21 @@ dplyframe<-function(x){
   return(z)
 }
 
-#put it all together
+#' A summary of repeats with means and sds.
+#' @param a vector of 5 parameters, a repeat number and a time:
+#'   c(speciation rate of good species,
+#'   speciation rate of incipient species, completion rate, death rate of
+#'   good species and death rate of incipient species). The time is following
+#' @return a data frame with means and sds of numbers of taxa at each timepoint
+#' @seealso \code{\link{repsim2}} which produces the inputs \code{\link{plotsim}}
+#'   which plots this functions output
+#' @export
+#' @examples
+#' summaryrepsim(c(0.2,0.2,0.2,0.1,0.1),15,15)
 summaryrepsim<-function(pars,n,time){
   dplyframe(loopfunct(repsim2(pars,n,time),time))
 }
+
 
 subsetdata<-function(data,var1,val1,var2,val2,var3,val3){
   data=as.data.frame(data)
@@ -371,6 +435,14 @@ plotcontour<-function(data,variable,xx,yy,var1,val1,var2,val2,var3,val3,logged=F
   return(ggplot(holding,aes(holding[,xx],holding[,yy],z=holding[,variable]),environment=environment()) + stat_contour(aes(colour = ..level..),environment=environment(),bins=numbins)+ xlim(0, 1)+ylim(0,1)+xlab(titleplot(xx))+ylab(titleplot(yy)))
 }
 
+#' A plot of repeats with means and sds.
+#' @param an output from summaryrepsim
+#' @return a ggplot
+#' @seealso \code{\link{repsim2}} which produces the inputs \code{\link{plotsim}}
+#'   which plots this functions output
+#' @export
+#' @examples
+#' plotsim(summaryrepsim(c(0.2,0.2,0.2,0.1,0.1),15,15))
 plotsim<-function(x){
   ggplot()+
     geom_line(data = x, aes(x = -time, y = meanlivingsp,colour=brewer.pal(5, "Accent")[1]))+
