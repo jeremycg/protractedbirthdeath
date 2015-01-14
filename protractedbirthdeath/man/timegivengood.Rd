@@ -16,7 +16,7 @@ a vector of times - equal to number of good species
 Finds time to be a good species.
 }
 \examples{
-timegivengood(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15),10,5)
+timegivengood(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15))
 }
 \seealso{
 \code{\link{repsim2}} which produces the inputs

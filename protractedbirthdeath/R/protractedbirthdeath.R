@@ -199,19 +199,19 @@ treemaker2<-function(z){
 
 removeyoungest<-function(z){
   z$run<-as.numeric(z$run)
-  zdeadtest<-z[!(z$taxalabel %in% z$parent),]
-  zdead<-zdeadtest %>% group_by(parent) %>% filter(timeatbirth==min(timeatbirth))
+  zdeadtest<-z%>%group_by(parent) %>% filter(timeatbirth==min(timeatbirth))
+  zdead<-zdeadtest[!(zdeadtest$taxalabel %in% z$parent),]
   z<-z[!(z$taxalabel %in% zdead$taxalabel),]
   parents<-z[z$taxalabel %in% zdead$parent,]
   z<-z[!z$taxalabel %in% zdead$parent,]
   zdead<-zdead[with(zdead, order(parent)), ]
   parents<-parents[with(parents, order(taxalabel)), ]
   parents$label <- paste("(", parents$label, ":", zdead$timeatbirth -
-    parents$timeofdeath, ",", zdead$label, ":", zdead$timeatbirth -
-    zdead$timeofdeath, ")", sep = "")
+  parents$timeofdeath, ",", zdead$label, ":", zdead$timeatbirth -
+  zdead$timeofdeath, ")", sep = "")
   parents$timeofdeath<-zdead$timeatbirth
   z<-rbind.fill(z,parents)
-  return(z)
+  z
 }
 
 #' Finds branchlength to closest extant sister taxa.
@@ -261,7 +261,7 @@ countpersistance <- function(df, t1 = 10, t2 = 5) {
 #' @seealso \code{\link{repsim2}} which produces the inputs
 #' @export
 #' @examples
-#' timegivengood(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15),10,5)
+#' timegivengood(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15))
 timegivengood <- function(df) {
   out=df$timeatbirth - df$speciationcomplete
   return(out[df$speciationcomplete != 15 & df$speciationcomplete !=-1])
@@ -273,7 +273,7 @@ timegivengood <- function(df) {
 #' @seealso \code{\link{repsim2}} which produces the inputs
 #' @export
 #' @examples
-#' numgoodincip(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15),10,5)
+#' numgoodincip(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15))
 numgoodincip <- function(df) {
     liveincip <- sum(df$timeofdeath==-1&df$speciationcomplete==-1)
     livegood <- sum(df$timeofdeath==-1&df$speciationcomplete!=-1)
@@ -491,7 +491,7 @@ taufunct<-function(var2,x,y,fixed){
 #' @seealso \code{\link{plottau}} which plots the outputs
 #' @export
 #' @examples
-#' tauloop(0.5,incipext)
+#' tauloop(0.5,"incipext")
 tauloop<-function(x,var){
   a<-seq(from=0.05,to=1,by=0.01)
   b<-seq(from=0.05,to=1,by=0.01)
@@ -513,7 +513,7 @@ tauloop<-function(x,var){
 #' @export
 #' @examples
 #' z<-tauloop(0.5,"incipext")
-#' plottau(z)
+#' plottau(z,"incipext",5)
 plottau<-function(holding,vars,max){
   if(vars=="incipext"){
     d="speccomp"

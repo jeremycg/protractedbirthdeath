@@ -16,7 +16,7 @@ a vector of 4 named numbers - dead and live good and incipient taxa
 Finds numbers of each possible outcome at end of simulation.
 }
 \examples{
-numgoodincip(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15),10,5)
+numgoodincip(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15))
 }
 \seealso{
 \code{\link{repsim2}} which produces the inputs

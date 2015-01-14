@@ -16,7 +16,7 @@ a matrix of tau, read to plot
 A matrix of tau values.
 }
 \examples{
-tauloop(0.5,incipext)
+tauloop(0.5,"incipext")
 }
 \seealso{
 \code{\link{plottau}} which plots the outputs
