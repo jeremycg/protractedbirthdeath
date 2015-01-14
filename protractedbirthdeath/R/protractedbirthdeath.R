@@ -198,12 +198,12 @@ treemaker2<-function(z){
 }
 
 removeyoungest<-function(z){
-  z$run<-as.numeric(z$run)
   zdeadtest<-z%>%group_by(parent) %>% filter(timeatbirth==min(timeatbirth))
   zdead<-zdeadtest[!(zdeadtest$taxalabel %in% z$parent),]
   z<-z[!(z$taxalabel %in% zdead$taxalabel),]
-  parents<-z[z$taxalabel %in% zdead$parent,]
-  z<-z[!z$taxalabel %in% zdead$parent,]
+  tmppar<-z$taxalabel %in% zdead$parent
+  parents<-z[tmppar,]
+  z<-z[!tmppar,]
   zdead<-zdead[with(zdead, order(parent)), ]
   parents<-parents[with(parents, order(taxalabel)), ]
   parents$label <- paste("(", parents$label, ":", zdead$timeatbirth -
