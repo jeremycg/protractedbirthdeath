@@ -414,7 +414,6 @@ summaryrepsim<-function(pars,n,time){
   dplyframe(loopfunct(repsim2(pars,n,time),time))
 }
 
-
 subsetdata<-function(data,var1,val1,var2,val2,var3,val3){
   data=as.data.frame(data)
   data2=data[data[,var1]==val1&data[,var2]==val2&data[,var3]==val3,]
@@ -429,6 +428,12 @@ titleplot<-function(x){
   else if (x=="f"){return("incipient extinction rate")}
 }
 
+#' A contourplot of number of species across differing parameters
+#' @param dataframe with many simulations, the variable to plot (ie good species)
+#' then the 3 fixed parameters and the values wanted for the plot
+#' @return a ggplot with the two non named variables and countours for the chosen variable
+#' @seealso \code{\link{repsim2}} which produces the inputs
+#' @export
 plotcontour<-function(data,variable,xx,yy,var1,val1,var2,val2,var3,val3,logged=F,numbins){
   holding<<-subsetdata(data,var1,val1,var2,val2,var3,val3)
   if(logged==T){holding[,variable]=log(holding[,variable])}
@@ -480,6 +485,13 @@ taufunct<-function(var2,x,y,fixed){
   }
 }
 
+#' A matrix of tau values.
+#' @param a value to fix, and the variable it is
+#' @return a matrix of tau, read to plot
+#' @seealso \code{\link{plottau}} which plots the outputs
+#' @export
+#' @examples
+#' tauloop(0.5,incipext)
 tauloop<-function(x,var){
   a<-seq(from=0.05,to=1,by=0.01)
   b<-seq(from=0.05,to=1,by=0.01)
@@ -493,6 +505,15 @@ tauloop<-function(x,var){
   return(holding)
 }
 
+#' A plot of tau (time to speciation)
+#' @param an output from tauloop
+#' @return a countour ggplot of tau
+#' @seealso \code{\link{tauloop}} which produces the inputs
+#'   which this function plots
+#' @export
+#' @examples
+#' z<-tauloop(0.5,"incipext")
+#' plottau(z)
 plottau<-function(holding,vars,max){
   if(vars=="incipext"){
     d="speccomp"
