@@ -2,6 +2,7 @@
 
 export(countpersistance)
 export(numgoodincip)
+export(pbdshiny)
 export(pbdsim2)
 export(plotcontour)
 export(plotsim)

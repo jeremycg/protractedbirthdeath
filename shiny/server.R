@@ -26,7 +26,7 @@ shinyServer(function(input, output) {
   })
 
 	output$Plot3 <- renderPlot({
-	data2<-summaryrepsim2(c(input$goodrate,input$compprate,input$inciprate,input$extgood,input$extincip),15,15)
+	data2<-summaryrepsim(c(input$goodrate,input$compprate,input$inciprate,input$extgood,input$extincip),15,15)
 	print(plotsim(data2))
 	})
 	output$Plot4 <- renderPlot({

@@ -46,7 +46,26 @@ plotsim(summary1)
 
 ##Shiny
 
+A cut down shiny app is in the package as a function:
+
+```R
+#library(protractectedbirthdeath)
+pbdshiny()
+```
+
+This should popup a shiny app which will run the simulations.
+Large numbers of species can take a long time!
+The first two tabs are responsive to the sliders on the side.
+
+1. on the fly:giving an output of means and sds of taxa numbers based on 15 repeats
+2. phylograms:a tree based on the evolutionary history
+3. Tau - the tau parameter based on the given parameters
+
+
+
 The package began life as a shiny app, and this is still extant.
+This has functions built in to view batch run data for summary stats that the function misses.
+You will need to have the (large!) simulation output files.
 
 To run, simply download the exampledata folder, install and load shiny
 

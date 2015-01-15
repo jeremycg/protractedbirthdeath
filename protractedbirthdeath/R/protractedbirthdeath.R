@@ -527,3 +527,81 @@ plottau<-function(holding,vars,max){
   v <- ggplot(holding, aes(x, y, z = z))
   print(v+geom_tile(aes(fill = z)) + stat_contour(bins=20)+xlab(d)+ylab(e)+ scale_fill_gradient(limits=c(0, max)))
 }
+
+#' A shiny app to view the simulations
+#' @param none
+#' @return a shiny app
+#' @export
+#' @examples
+#' pbdshiny()
+pbdshiny <- function() {
+  shinyApp(
+    ui = pageWithSidebar(
+      headerPanel("Protracted birth death"),
+      sidebarPanel(sliderInput("goodrate", "speciation rate of good species:",
+          min = 0.00,max = 1.0, value = 0.4,step=0.01,ticks=T),
+        sliderInput("compprate","speciation completion rate:",
+          min = 0.00,max = 1.0,value = 1.0,step=0.01,ticks=T),
+        sliderInput("inciprate","speciation rate of incipient species:",
+          min = 0.0,max = 1.0,value = 0.4,step=0.01,ticks=T),
+        sliderInput("extgood","extinction rate of good species:",
+          min = 0.0,max = 1.0,value = 1.0,step=0.01,ticks=T),
+        sliderInput("extincip","extinction rate of incipient species:",
+          min = 0.0,max = 1.0,value = 1.0,step=0.01,ticks=T),
+        sliderInput("goodrate2","2nd speciation rate of good species:",
+          min = 0.0,max = 1.0,value = 0.4,step=0.01,ticks=T),
+        sliderInput("compprate2","2nd speciation completion rate:",
+          min = 0.0,max = 1.0,value = 1.0,step=0.01,ticks=T),
+        sliderInput("inciprate2","2nd speciation rate of incipient species:",
+          min = 0.0,max = 1.0,value = 0.4,step=0.01,ticks=T),
+        sliderInput("extgood2","2nd extinction rate of good species:",
+          min = 0.0,max = 1.0,value = 1.0,step=0.01,ticks=T),
+        sliderInput("extincip2","2nd extinction rate of incipient species:",
+          min = 0.0,max = 1.0,value = 1.0,step=0.01,ticks=T),
+      ),
+      mainPanel(
+        tabsetPanel(
+          tabPanel("On the fly", plotOutput("Plot3"),plotOutput("Plot4")),
+          tabPanel("phylograms",plotOutput("Plot12"),plotOutput("Plot13")),
+          tabPanel("tau",
+            selectInput("tauvariable", "Choose a variable to fix:",
+              choices = c("speccomp","incipsp","incipext")),
+            sliderInput("taurate","value",min = 0.0,max = 1.0,
+              value = 0.4,step=0.01,ticks=T),
+            sliderInput("maxcolour","max colour",min=0.0,max=100.0,
+              value=8,step=0.01,ticks=T),
+            plotOutput("Plot14")
+          )
+        )
+      )
+    ),
+    server = function(input, output) {
+      output$Plot3 <- renderPlot({
+        data2<-summaryrepsim(c(input$goodrate,input$compprate,input$inciprate,
+          input$extgood,input$extincip),15,15)
+        print(plotsim(data2))
+        })
+      output$Plot4 <- renderPlot({
+        data2<-summaryrepsim(c(input$goodrate2,input$compprate2,
+          input$inciprate2,input$extgood2,input$extincip2),15,15)
+        print(plotsim(data2))
+        })
+      output$Plot12<- renderPlot({
+        x1<-repsim2(c(input$goodrate,input$compprate,input$inciprate,
+          input$extgood,input$extincip),1,15)
+        x2<-treemaker2(x1)
+        plot(read.tree(text=x2))
+        })
+      output$Plot13<- renderPlot({
+        x1<-repsim2(c(input$goodrate2,input$compprate2,input$inciprate2,
+          input$extgood2,input$extincip2),1,15)
+        x2<-treemaker(x1)
+        plot(read.tree(text=x2))
+        })
+      output$Plot14<-renderPlot({
+        plottau(tauloop(input$taurate,input$tauvariable),input$tauvariable,
+          input$maxcolour)
+        })
+    }
+  )
+}
