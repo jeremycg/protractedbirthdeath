@@ -9,6 +9,7 @@ Depends:
     ggplot2,
     RColorBrewer,
     reshape2,
-    ape
+    ape,
+    shiny
 License: MIT
 LazyData: true
