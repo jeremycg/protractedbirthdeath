@@ -557,7 +557,7 @@ pbdshiny <- function() {
         sliderInput("extgood2","2nd extinction rate of good species:",
           min = 0.0,max = 1.0,value = 1.0,step=0.01,ticks=T),
         sliderInput("extincip2","2nd extinction rate of incipient species:",
-          min = 0.0,max = 1.0,value = 1.0,step=0.01,ticks=T),
+          min = 0.0,max = 1.0,value = 1.0,step=0.01,ticks=T)
       ),
       mainPanel(
         tabsetPanel(
