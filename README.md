@@ -2,7 +2,7 @@
 ====================
 
 
-[![Travis-CI Build Status](https://travis-ci.org/<USERNAME>/<REPO>.png?branch=master)](https://travis-ci.org/<USERNAME>/<REPO>)
+[![Travis-CI Build Status](https://travis-ci.org/jeremycg/protractedbirthdeath.png?branch=master)](https://travis-ci.org/jeremycg/protractedbirthdeath)
 
 ##modelling speciation with incipient species
 
