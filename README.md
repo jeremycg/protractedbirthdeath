@@ -1,6 +1,9 @@
 #protractedbirthdeath
 ====================
 
+
+[![Travis-CI Build Status](https://travis-ci.org/<USERNAME>/<REPO>.png?branch=master)](https://travis-ci.org/<USERNAME>/<REPO>)
+
 ##modelling speciation with incipient species
 
 This shiny app uses a modification of the PBD package by Etienne and Rosindell (2014) allowing for 0s as parameters, and extinction. It also treats "orphaned" incipient species in a more intelligent way.
