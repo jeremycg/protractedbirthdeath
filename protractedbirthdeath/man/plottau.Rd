@@ -16,8 +16,10 @@ a countour ggplot of tau
 A plot of tau (time to speciation)
 }
 \examples{
+\dontrun{
 z<-tauloop(0.5,"incipext")
 plottau(z,"incipext",5)
+}
 }
 \seealso{
 \code{\link{tauloop}} which produces the inputs
