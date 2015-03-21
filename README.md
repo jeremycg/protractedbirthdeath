@@ -6,7 +6,7 @@
 
 ##modelling speciation with incipient species
 
-This shiny app uses a modification of the PBD package by Etienne and Rosindell (2014) allowing for 0s as parameters, and extinction. It also treats "orphaned" incipient species in a more intelligent way.
+This library uses a modification of the PBD package by Etienne and Rosindell (2014) allowing for 0s as parameters, and extinction. It also treats "orphaned" incipient species in a more intelligent way. There are also new function for analysis of the outputs.
 
 The main core of the project is now a package. To install, run:
 

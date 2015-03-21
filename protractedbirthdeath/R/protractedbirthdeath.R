@@ -7,8 +7,10 @@
 #' @seealso \code{\link{repsim2}} which wraps this function and does repeats
 #' @export
 #' @examples
+#'\dontrun{
 #' pbdsim2(c(0.1,0.1,0.1,0.1,0.1),15)
 #' pbdsim2(c(0.2,0.2,0.2,0.1,0.1),15)
+#'}
 pbdsim2 <- function(pars, totaltime = 15) {
   overload=0
   good <- list()  #list of good species
@@ -117,9 +119,11 @@ pbdsim2 <- function(pars, totaltime = 15) {
 #'   \code{\link{summaryrepsim}} which takes averages of repeats
 #' @export
 #' @examples
+#'\dontrun{
 #' repsim2(c(0.1,0.1,0.1,0.1,0.1),15,15)
 #' repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15)
 #' summaryrepsim(c(0.1,0.1,0.1,0.1,0.1),15,15)
+#'}
 repsim2 <- function(pars, n, time = 15) {
   output<-c()
   x <- rlply(n,pbdsim2(pars,time))
@@ -142,9 +146,11 @@ combinelists<-function(x){
 #' @seealso \code{\link{repsim2}} which produces the inputs
 #' @export
 #' @examples
+#'\dontrun{
 #' x<-treemaker(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15))
 #' phy<-read.tree(text=x)
 #' plot(phy)
+#'}
 treemaker <- function(x) {
     x<-as.data.frame(x)
     x$timeofdeath[x$timeofdeath==-1]<-0
@@ -185,9 +191,11 @@ treemaker <- function(x) {
 #' @seealso \code{\link{repsim2}} which produces the inputs
 #' @export
 #' @examples
+#'\dontrun{
 #' x<-treemaker2(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15))
 #' phy<-read.tree(text=x)
 #' plot(phy)
+#'}
 treemaker2<-function(z){
   z$timeofdeath[z$timeofdeath==-1]<-0
   z$label<-z$taxalabel
@@ -220,7 +228,9 @@ removeyoungest<-function(z){
 #' @seealso \code{\link{repsim2}} which produces the inputs
 #' @export
 #' @examples
+#'\dontrun{
 #' sisterlengths(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15))
+#'}
 sisterlengths <- function(working) {
     phy <- treemaker2(working)  #make a tree
     phy1 <- read.tree(text = phy)  #make it of class phy
@@ -243,7 +253,9 @@ sisterlengths <- function(working) {
 #' @seealso \code{\link{repsim2}} which produces the inputs
 #' @export
 #' @examples
+#'\dontrun{
 #' countpersistance(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15),10,5)
+#'}
 countpersistance <- function(df, t1 = 10, t2 = 5) {
   df<-as.data.frame(df)
   df$timeofdeath[df$timeofdeath==-1]<-0
@@ -261,7 +273,9 @@ countpersistance <- function(df, t1 = 10, t2 = 5) {
 #' @seealso \code{\link{repsim2}} which produces the inputs
 #' @export
 #' @examples
+#'\dontrun{
 #' timegivengood(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15))
+#'}
 timegivengood <- function(df) {
   out=df$timeatbirth - df$speciationcomplete
   return(out[df$speciationcomplete != 15 & df$speciationcomplete !=-1])
@@ -273,7 +287,9 @@ timegivengood <- function(df) {
 #' @seealso \code{\link{repsim2}} which produces the inputs
 #' @export
 #' @examples
+#'\dontrun{
 #' numgoodincip(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15))
+#'}
 numgoodincip <- function(df) {
     liveincip <- sum(df$timeofdeath==-1&df$speciationcomplete==-1)
     livegood <- sum(df$timeofdeath==-1&df$speciationcomplete!=-1)
@@ -409,7 +425,9 @@ dplyframe<-function(x){
 #'   which plots this functions output
 #' @export
 #' @examples
+#'\dontrun{
 #' summaryrepsim(c(0.2,0.2,0.2,0.1,0.1),15,15)
+#'}
 summaryrepsim<-function(pars,n,time){
   dplyframe(loopfunct(repsim2(pars,n,time),time))
 }
@@ -447,7 +465,9 @@ plotcontour<-function(data,variable,xx,yy,var1,val1,var2,val2,var3,val3,logged=F
 #'   which plots this functions output
 #' @export
 #' @examples
+#'\dontrun{
 #' plotsim(summaryrepsim(c(0.2,0.2,0.2,0.1,0.1),15,15))
+#'}
 plotsim<-function(x){
   ggplot()+
     geom_line(data = x, aes(x = -time, y = meanlivingsp,colour=brewer.pal(5, "Accent")[1]))+
@@ -533,7 +553,9 @@ plottau<-function(holding,vars,max){
 #' @return a shiny app
 #' @export
 #' @examples
+#'\dontrun{
 #' pbdshiny()
+#'}
 pbdshiny <- function() {
   shinyApp(
     ui = pageWithSidebar(
