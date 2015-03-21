@@ -511,7 +511,9 @@ taufunct<-function(var2,x,y,fixed){
 #' @seealso \code{\link{plottau}} which plots the outputs
 #' @export
 #' @examples
+#'\dontrun{
 #' tauloop(0.5,"incipext")
+#'}
 tauloop<-function(x,var){
   a<-seq(from=0.05,to=1,by=0.01)
   b<-seq(from=0.05,to=1,by=0.01)
@@ -532,8 +534,10 @@ tauloop<-function(x,var){
 #'   which this function plots
 #' @export
 #' @examples
+#'\dontrun{
 #' z<-tauloop(0.5,"incipext")
 #' plottau(z,"incipext",5)
+#'}
 plottau<-function(holding,vars,max){
   if(vars=="incipext"){
     d="speccomp"
