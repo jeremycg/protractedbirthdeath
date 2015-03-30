@@ -319,9 +319,14 @@ numgoodincip <- function(df) {
     deadgood <- sum(df$timeofdeath!=-1&df$speciationcomplete!=-1)
     return(c(liveincip, livegood, deadincip, deadgood))  #returns it as a list
 }
-
-
-
+#' sumfunctpart1
+#' an internal function to determine living species at each time point
+#' run across (apply,1) on a repsim result to give each lines time of death etc
+#' @param x a single line of a run from repsim2
+#' @param time the time the simulation was run for
+#' @return a vector with 0,1,2,3,4 at each integer t depending on taxa state
+#' summed to give summaries
+#' @seealso \code{\link{summaryrepsim}} which links everything together
 sumfunctpart1<-function(x,time=15){
   output<-c(rep(0,time+1))
   output[(time+1-x[[2]]):(time+2)]<-1
@@ -333,7 +338,12 @@ sumfunctpart1<-function(x,time=15){
   }
   return(output[0:time+1])
 }
-
+#' sumfunctpart2
+#' an internal function to determine living species at each time point
+#' run across (apply,1) on a sumfunctpart1 result to give each lines time of death etc
+#' @param downcol a single line of a run from sumfunct1
+#' @return a matrix with taxa state for each n
+#' @seealso \code{\link{summaryrepsim}} which links everything together
 sumfunctpart2<-function(downcol){
   incipient<-sum(downcol==1)
   good<-sum(downcol==2)
@@ -341,8 +351,12 @@ sumfunctpart2<-function(downcol){
   deadincipient<-sum(downcol==4)
   return(c(good,incipient,deadgood,deadincipient))
 }
-
-
+#' sumfunct
+#' an internal function to determine living species at each time point
+#' @param df a single run of repsim2
+#' @param time the time repsim2 was run for
+#' @return a dataframe with number of species in each class at each integer time point
+#' @seealso \code{\link{summaryrepsim}} which loops this over multiple runs for means and sds
 sumfunct<-function(df,time=15){
   df[2:4]<-floor(df[2:4])
   out<-as.data.frame(t(apply(apply(df,1,sumfunctpart1,time=time),1,sumfunctpart2)))
@@ -351,12 +365,21 @@ sumfunct<-function(df,time=15){
   out$alltaxa<-out[,1]+out[,2]
   return(out)
 }
-
+#' loopfunct
+#' an internal function to determine living species at each time point
+#' @param df a single run of repsim2
+#' @param time the time repsim2 was run for
+#' @return a dataframe with number of species in each class at each integer time point run over all repeats
+#' @seealso \code{\link{summaryrepsim}} which loops this over multiple runs for means and sds
 loopfunct<-function(x,time=15){
  ddply(x,.(run),function(df){sumfunct(df,time)})
 }
 
-#get means and sd!
+#' dplyframe
+#' an internal function to determine living species at each time point
+#' @param x a single run of loopfunct
+#' @return a dataframe with mean and sd number of species in each class at each integer time point run over all repeats
+#' @seealso \code{\link{summaryrepsim}} which loops this over multiple runs for means and sds
 dplyframe<-function(x){
   z=ddply(x,.(time),function(df){
   c(mean(df$livingspecies),mean(df$livingincipient),mean(df$extinctspecies),mean(df$extinctincipient),mean(df$alltaxa),
@@ -367,11 +390,13 @@ dplyframe<-function(x){
   return(z)
 }
 
+#' summaryrepsim
 #' A summary of repeats with means and sds.
-#' @param a vector of 5 parameters, a repeat number and a time:
-#'   c(speciation rate of good species,
+#' @param pars a vector of 5 parameters: c(speciation rate of good species,
 #'   speciation rate of incipient species, completion rate, death rate of
-#'   good species and death rate of incipient species). The time is following
+#'   good species and death rate of incipient species).
+#' @param n a number of times to repeat the simulation
+#' @param time time to run simulation, defaults to 15
 #' @return a data frame with means and sds of numbers of taxa at each timepoint
 #' @seealso \code{\link{repsim2}} which produces the inputs \code{\link{plotsim}}
 #'   which plots this functions output
@@ -383,13 +408,23 @@ dplyframe<-function(x){
 summaryrepsim<-function(pars,n,time){
   dplyframe(loopfunct(repsim2(pars,n,time),time))
 }
-
+#' subsetdata
+#' subsets data based on parameters
+#' @param data a loaded frame of multiple results see example data for formatting
+#' @param var1 the name of variable 1
+#' @param val1 the selected value of variable 1
+#' @param var1 the name of variable 2
+#' @param val1 the selected value of variable 2
+#' @param var1 the name of variable 3
+#' @param val1 the selected value of variable 3
 subsetdata<-function(data,var1,val1,var2,val2,var3,val3){
   data=as.data.frame(data)
   data2=data[data[,var1]==val1&data[,var2]==val2&data[,var3]==val3,]
   return(data2)
 }
 
+#' titles a plot
+#' @param x a variable taken from the example data
 titleplot<-function(x){
   if(x=="a"){return ("good speciation rate")}
   else if (x=="b"){return("speciation completion rate")}
@@ -399,8 +434,20 @@ titleplot<-function(x){
 }
 
 #' A contourplot of number of species across differing parameters
-#' @param dataframe with many simulations, the variable to plot (ie good species)
-#' then the 3 fixed parameters and the values wanted for the plot
+#' chooses a variable - mean sd of alltaxa, good taxa etc
+#' and plots it for fixed values of three chosen variables
+#' @param data a loaded frame of multiple results see example data for formatting
+#' @param variable a value to plot - usually mean
+#' @param xx the x axis variable
+#' @param yy the y axis variable
+#' @param var1 the name of variable 1
+#' @param val1 the selected value of variable 1
+#' @param var1 the name of variable 2
+#' @param val1 the selected value of variable 2
+#' @param var1 the name of variable 3
+#' @param val1 the selected value of variable 3
+#' @param logged whether to plot logged data, defaults to F
+#' @param numbins the number of bins to use in plotting contours
 #' @return a ggplot with the two non named variables and countours for the chosen variable
 #' @seealso \code{\link{repsim2}} which produces the inputs
 #' @export
@@ -411,7 +458,7 @@ plotcontour<-function(data,variable,xx,yy,var1,val1,var2,val2,var3,val3,logged=F
 }
 
 #' A plot of repeats with means and sds.
-#' @param an output from summaryrepsim
+#' @param x an output from summaryrepsim
 #' @return a ggplot
 #' @seealso \code{\link{repsim2}} which produces the inputs \code{\link{plotsim}}
 #'   which plots this functions output
@@ -440,13 +487,24 @@ plotsim<-function(x){
                      labels=c("Total taxa", "Living species", "Living Incipient","Extinct species","Extinct incipient"))
 }
 
+#' calculates tau - time to complete speciation
+#' @param l2 speciation completion rate
+#' @param l3 incipient speciation rate
+#' @param m2 incipient species death rate
+#' @return a single tau value
 tau<-function(l2,l3,m2){
   D=sqrt((l2+l3)^2+2*((l2-l3)*m2)+m2^2)
   return((2/(D-l2+l3-m2))*log(2/(1+((l2-l3+m2)/D))))
 }
 
 
-
+#' calculates tau with fixed values
+#' allows choosing of variables to plot
+#' @param var2 variable to fix
+#' @param x first other variable
+#' @param y second other variable
+#' @param fixed the fixed value to give var2
+#' @return a single tau value
 taufunct<-function(var2,x,y,fixed){
   if(var2=="incipext"){
     return(tau(x,y,fixed))
@@ -458,7 +516,8 @@ taufunct<-function(var2,x,y,fixed){
 }
 
 #' A matrix of tau values.
-#' @param a value to fix, and the variable it is
+#' @param var value to fix
+#' @param x the value to give it
 #' @return a matrix of tau, read to plot
 #' @seealso \code{\link{plottau}} which plots the outputs
 #' @export
@@ -480,7 +539,9 @@ tauloop<-function(x,var){
 }
 
 #' A plot of tau (time to speciation)
-#' @param an output from tauloop
+#' @param holding an output of tauloop
+#' @param vars variable to fix
+#' @param max the value to clip tau on the plot at
 #' @return a countour ggplot of tau
 #' @seealso \code{\link{tauloop}} which produces the inputs
 #'   which this function plots
@@ -505,7 +566,6 @@ plottau<-function(holding,vars,max){
 }
 
 #' A shiny app to view the simulations
-#' @param none
 #' @return a shiny app
 #' @export
 #' @examples
