@@ -193,7 +193,7 @@ treemaker <- function(x) {
 
 #' Takes a single inputted run and makes a (text) tree.
 #' much faster than treemaker
-#' @param x a single run from repsim2
+#' @param z a single run from repsim2
 #' @return a string which can be read into ape using read.tree
 #' @seealso \code{\link{repsim2}} which produces the inputs
 #' @export
@@ -217,7 +217,7 @@ treemaker2<-function(z){
 #' making sure it isnt a parent. If it isnt, it is trimmed and removed from the list
 #' and its parent is relabelled. Probably my hardest thought out function.
 #' Significantly faster than simply removing the youngest taxa as this prunes all at once.
-#' @param x a single run from repsim2
+#' @param z a single run from repsim2
 #' @return dataframe with the youngest offsprings all removed
 #' @seealso \code{\link{repsim2}} which produces the inputs
 #' @examples
@@ -367,7 +367,7 @@ sumfunct<-function(df,time=15){
 }
 #' loopfunct
 #' an internal function to determine living species at each time point
-#' @param df a single run of repsim2
+#' @param x a single run of repsim2
 #' @param time the time repsim2 was run for
 #' @return a dataframe with number of species in each class at each integer time point run over all repeats
 #' @seealso \code{\link{summaryrepsim}} which loops this over multiple runs for means and sds
@@ -413,10 +413,10 @@ summaryrepsim<-function(pars,n,time){
 #' @param data a loaded frame of multiple results see example data for formatting
 #' @param var1 the name of variable 1
 #' @param val1 the selected value of variable 1
-#' @param var1 the name of variable 2
-#' @param val1 the selected value of variable 2
-#' @param var1 the name of variable 3
-#' @param val1 the selected value of variable 3
+#' @param var2 the name of variable 2
+#' @param val2 the selected value of variable 2
+#' @param var3 the name of variable 3
+#' @param val3 the selected value of variable 3
 subsetdata<-function(data,var1,val1,var2,val2,var3,val3){
   data=as.data.frame(data)
   data2=data[data[,var1]==val1&data[,var2]==val2&data[,var3]==val3,]
@@ -442,10 +442,10 @@ titleplot<-function(x){
 #' @param yy the y axis variable
 #' @param var1 the name of variable 1
 #' @param val1 the selected value of variable 1
-#' @param var1 the name of variable 2
-#' @param val1 the selected value of variable 2
-#' @param var1 the name of variable 3
-#' @param val1 the selected value of variable 3
+#' @param var2 the name of variable 2
+#' @param val2 the selected value of variable 2
+#' @param var3 the name of variable 3
+#' @param val3 the selected value of variable 3
 #' @param logged whether to plot logged data, defaults to F
 #' @param numbins the number of bins to use in plotting contours
 #' @return a ggplot with the two non named variables and countours for the chosen variable
