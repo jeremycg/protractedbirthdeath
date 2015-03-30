@@ -226,6 +226,7 @@ treemaker2<-function(z){
 #' @importFrom dplyr group_by
 #' @importFrom dplyr "filter"
 #' @importFrom dplyr rbind.fill
+#' @export
 #' @examples
 #'\dontrun{
 #' x<-removeyoungest(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15))
