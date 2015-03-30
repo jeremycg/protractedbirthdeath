@@ -138,14 +138,19 @@ repsim2 <- function(pars, n, time = 15) {
   return(zzz)
 }
 
+#' An internal function to quickly combine lists
+#' @param x a list
+#' @return a dataframe containing sensibly formatted data for use in \code{\link{repsim2}}
 combinelists<-function(x){
   data.frame(matrix(unlist(x), nrow=length(x), byrow=T))
 }
 
 #' Takes a single inputted run and makes a (text) tree.
+#' deprecated - much slower than treemaker2
 #' @param x a single run from repsim2
 #' @return a string which can be read into ape using read.tree
 #' @seealso \code{\link{repsim2}} which produces the inputs
+#' @seealso \code{\link{treemaker2}} a much faster implementation
 #' @export
 #' @examples
 #'\dontrun{
@@ -207,7 +212,7 @@ treemaker2<-function(z){
   paste(z$label, ";", sep = "")
 }
 #' Remove youngest taxa from tree
-#' the recurssive function used to prune trees for tree construction in 
+#' the recurssive function used to prune trees for tree construction in
 #' \code{\link{treemaker2}}. Works by taking the youngest offspring from each parent,
 #' making sure it isnt a parent. If it isnt, it is trimmed and removed from the list
 #' and its parent is relabelled. Probably my hardest thought out function.
@@ -237,7 +242,7 @@ removeyoungest<-function(z){
 }
 
 #' Finds branchlength to closest extant sister taxa.
-#' @param a single run from repsim2
+#' @param working a single run from repsim2
 #' @return a list of branch lengths
 #' @seealso \code{\link{repsim2}} which produces the inputs
 #' @export
@@ -262,7 +267,10 @@ sisterlengths <- function(working) {
 
 
 #' Finds persistance of taxa over time.
-#' @param a single run from repsim2, and two timepoints to check
+#' gives a number of taxa alive at t1 and t2 or both
+#' @param df single run from repsim2
+#' @param t1 first time point
+#' @param t2 second time point
 #' @return a vector of 3 values - those alive at t1, both and t2
 #' @seealso \code{\link{repsim2}} which produces the inputs
 #' @export
@@ -282,7 +290,7 @@ countpersistance <- function(df, t1 = 10, t2 = 5) {
 }
 
 #' Finds time to be a good species.
-#' @param a single run from repsim2
+#' @param df a single run from repsim2
 #' @return a vector of times - equal to number of good species
 #' @seealso \code{\link{repsim2}} which produces the inputs
 #' @export
@@ -296,7 +304,7 @@ timegivengood <- function(df) {
 }
 
 #' Finds numbers of each possible outcome at end of simulation.
-#' @param a single run from repsim2
+#' @param df a single run from repsim2
 #' @return a vector of 4 named numbers - dead and live good and incipient taxa
 #' @seealso \code{\link{repsim2}} which produces the inputs
 #' @export
@@ -312,77 +320,7 @@ numgoodincip <- function(df) {
     return(c(liveincip, livegood, deadincip, deadgood))  #returns it as a list
 }
 
-#deprecated
-#use pddsim2
-pbdsim=function(pars,totaltime){
-  good=list()
-  incipient=list()
-  good[[1]]=c(1,totaltime,totaltime,-1)
-  incipient[[1]]=c(2,totaltime,-1,-1)
-  taxaid=3
-  deadgood=list()
-  deadincipient=list()
-  t=0
-  while(t<=totaltime){
-    numgood=length(good)
-    numincipient=length(incipient)
-    if(numgood==0 && numincipient==0){break}
-    probs=c(pars[1]*numgood,pars[2]*numincipient,pars[3]*numincipient,pars[4]*numgood,pars[5]*numincipient)
-    denom=sum(probs)
-    probs=probs/denom
-    t=t-log(runif(1))/denom
-    if(t>=totaltime){break}
-    event=sample(1:5,1,prob=probs)
-    if(event==1){
-      #new incipient from good
-      incipient[[numincipient+1]]=c(taxaid,totaltime-t,-1,-1)
-      taxaid=taxaid+1
-    } else if (event==2){
-      #new good from incipient
-      take=sample(1:numincipient,1)
-      good[[numgood+1]]=incipient[[take]]
-      good[[numgood+1]][3]=totaltime-t
-      incipient[[take]]=NULL
-    } else if (event==3){
-      #new from incipient
-      incipient[[numincipient+1]]=c(taxaid,totaltime-t,-1,-1)
-      taxaid=taxaid+1
-    } else if (event==4){
-      #dead good
-      totaldeadgood=length(deadgood)
-      take=sample(1:numgood,1)
-      deadgood[[totaldeadgood+1]]=good[[take]]
-      deadgood[[totaldeadgood+1]][4]=totaltime-t
-      good[[take]]=NULL
-    } else if (event==5){
-      #dead incipient
-      totaldeadincipient=length(deadincipient)
-      take=sample(1:numincipient,1)
-      deadincipient[[totaldeadincipient+1]]=incipient[[take]]
-      deadincipient[[totaldeadincipient+1]][4]=totaltime-t
-      incipient[[take]]=NULL
-    }
-  }
-  return(c(good,incipient,deadgood,deadincipient))
-}
 
-#this is deprecated
-#slow, and leaves stuff out
-#use repsim2
-repsim <- function(pars,n,time=15){
-  x=c()
-    i=1
-    while(i <= n){
-    y=c()
-    for(j in pbdsim(pars,time)){y=rbind(y,j)}
-    y=cbind(y,i)
-        x=rbind(x,y)
-        i=i+1
-    }
-  x=as.data.frame(x,row.names=F)
-  names(x)=c("taxalabel","timeatbirth","speciationcomplete","timeofdeath","run")
-    return(x)
-}
 
 sumfunctpart1<-function(x,time=15){
   output<-c(rep(0,time+1))
