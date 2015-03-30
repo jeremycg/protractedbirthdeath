@@ -10,6 +10,7 @@ Imports:
     RColorBrewer,
     reshape2,
     ape,
-    shiny
+    shiny,
+    magrittr
 License: MIT
 LazyData: true

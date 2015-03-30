@@ -226,7 +226,6 @@ treemaker2<-function(z){
 #' @importFrom dplyr group_by
 #' @importFrom dplyr "filter"
 #' @importFrom plyr rbind.fill
-#' @export
 #' @examples
 #'\dontrun{
 #' x<-removeyoungest(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15))
@@ -252,6 +251,8 @@ removeyoungest<-function(z){
 #' @param working a single run from repsim2
 #' @return a list of branch lengths
 #' @seealso \code{\link{repsim2}} which produces the inputs
+#' @importFrom ape read.tree
+#' @importFrom ape drop.tip
 #' @export
 #' @examples
 #'\dontrun{
