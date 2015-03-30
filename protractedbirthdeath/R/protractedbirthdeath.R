@@ -1,7 +1,8 @@
 #' Simulate speciation by a protracted birth death process.
-#' @param a vector of 5 parameters, and a time: c(speciation rate of good species,
+#' @param pars a vector of 5 parameters: c(speciation rate of good species,
 #'   speciation rate of incipient species, completion rate, death rate of
-#'   good species and death rate of incipient species). The time is following
+#'   good species and death rate of incipient species).
+#' @param totaltime time to run simulation, defaults to 15
 #' @return a list with each taxa as its own entry, with birth and death times
 #'   has an atrribute overloaded=1 if too many species were formed
 #' @seealso \code{\link{repsim2}} which wraps this function and does repeats
@@ -110,10 +111,11 @@ pbdsim2 <- function(pars, totaltime = 15) {
 }
 
 #' Repeat \code{\link{pbdsim2}} multiple times and output in a dataframe.
-#' @param a vector of 5 parameters, a repeat number and a time:
-#'   c(speciation rate of good species,
+#' @param pars a vector of 5 parameters: c(speciation rate of good species,
 #'   speciation rate of incipient species, completion rate, death rate of
-#'   good species and death rate of incipient species). The time is following
+#'   good species and death rate of incipient species).
+#' @param n a number of times to repeat the simulation
+#' @param time time to run simulation, defaults to 15
 #' @return a dataframe with each taxa as its own entry, with birth and death times
 #' @seealso \code{\link{pbdsim2}} which is the single repeat version,
 #'   \code{\link{summaryrepsim}} which takes averages of repeats
@@ -141,7 +143,7 @@ combinelists<-function(x){
 }
 
 #' Takes a single inputted run and makes a (text) tree.
-#' @param a single run from repsim2
+#' @param x a single run from repsim2
 #' @return a string which can be read into ape using read.tree
 #' @seealso \code{\link{repsim2}} which produces the inputs
 #' @export
@@ -186,7 +188,7 @@ treemaker <- function(x) {
 
 #' Takes a single inputted run and makes a (text) tree.
 #' much faster than treemaker
-#' @param a single run from repsim2
+#' @param x a single run from repsim2
 #' @return a string which can be read into ape using read.tree
 #' @seealso \code{\link{repsim2}} which produces the inputs
 #' @export
@@ -204,7 +206,19 @@ treemaker2<-function(z){
   }
   paste(z$label, ";", sep = "")
 }
-
+#' Remove youngest taxa from tree
+#' the recurssive function used to prune trees for tree construction in 
+#' \code{\link{treemaker2}}. Works by taking the youngest offspring from each parent,
+#' making sure it isnt a parent. If it isnt, it is trimmed and removed from the list
+#' and its parent is relabelled. Probably my hardest thought out function.
+#' Significantly faster than simply removing the youngest taxa as this prunes all at once.
+#' @param x a single run from repsim2
+#' @return dataframe with the youngest offsprings all removed
+#' @seealso \code{\link{repsim2}} which produces the inputs
+#' @examples
+#'\dontrun{
+#' x<-removeyoungest(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15))
+#' }
 removeyoungest<-function(z){
   zdeadtest<-z%>%group_by(parent) %>% filter(timeatbirth==min(timeatbirth))
   zdead<-zdeadtest[!(zdeadtest$taxalabel %in% z$parent),]
