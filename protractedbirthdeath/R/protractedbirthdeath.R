@@ -481,6 +481,7 @@ plotcontour<-function(data,variable,xx,yy,var1,val1,var2,val2,var3,val3,logged=F
 #' @importFrom ggplot2 ylab
 #' @importFrom ggplot2 scale_fill_discrete
 #' @importFrom ggplot2 scale_colour_hue
+#' @importFrom RColorBrewer brewer.pal
 #' @examples
 #'\dontrun{
 #' plotsim(summaryrepsim(c(0.2,0.2,0.2,0.1,0.1),15,15))
