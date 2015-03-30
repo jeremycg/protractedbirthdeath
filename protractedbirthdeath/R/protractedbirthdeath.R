@@ -225,7 +225,7 @@ treemaker2<-function(z){
 #' @importFrom magrittr "%>%"
 #' @importFrom dplyr group_by
 #' @importFrom dplyr "filter"
-#' @importFrom dplyr rbind.fill
+#' @importFrom plyr rbind.fill
 #' @export
 #' @examples
 #'\dontrun{
