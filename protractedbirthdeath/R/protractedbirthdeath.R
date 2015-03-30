@@ -120,6 +120,8 @@ pbdsim2 <- function(pars, totaltime = 15) {
 #' @seealso \code{\link{pbdsim2}} which is the single repeat version,
 #'   \code{\link{summaryrepsim}} which takes averages of repeats
 #' @export
+#' @importFrom plyr rlply
+#' @importFrom dplyr rbind_all
 #' @examples
 #'\dontrun{
 #' repsim2(c(0.1,0.1,0.1,0.1,0.1),15,15)
@@ -220,6 +222,10 @@ treemaker2<-function(z){
 #' @param z a single run from repsim2
 #' @return dataframe with the youngest offsprings all removed
 #' @seealso \code{\link{repsim2}} which produces the inputs
+#' @importFrom magrittr "%>%"
+#' @importFrom dplyr group_by
+#' @importFrom dplyr "filter"
+#' @importFrom dplyr rbind.fill
 #' @examples
 #'\dontrun{
 #' x<-removeyoungest(repsim2(c(0.2,0.2,0.2,0.1,0.1),1,15))
@@ -370,6 +376,7 @@ sumfunct<-function(df,time=15){
 #' @param x a single run of repsim2
 #' @param time the time repsim2 was run for
 #' @return a dataframe with number of species in each class at each integer time point run over all repeats
+#' @importFrom plyr ddply
 #' @seealso \code{\link{summaryrepsim}} which loops this over multiple runs for means and sds
 loopfunct<-function(x,time=15){
  ddply(x,.(run),function(df){sumfunct(df,time)})
@@ -379,6 +386,8 @@ loopfunct<-function(x,time=15){
 #' an internal function to determine living species at each time point
 #' @param x a single run of loopfunct
 #' @return a dataframe with mean and sd number of species in each class at each integer time point run over all repeats
+#' @importFrom plyr ddply
+#' @importFrom plyr "."
 #' @seealso \code{\link{summaryrepsim}} which loops this over multiple runs for means and sds
 dplyframe<-function(x){
   z=ddply(x,.(time),function(df){
@@ -463,6 +472,13 @@ plotcontour<-function(data,variable,xx,yy,var1,val1,var2,val2,var3,val3,logged=F
 #' @seealso \code{\link{repsim2}} which produces the inputs \code{\link{plotsim}}
 #'   which plots this functions output
 #' @export
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 geom_line
+#' @importFrom ggplot2 geom_ribbon
+#' @importFrom ggplot2 xlab
+#' @importFrom ggplot2 ylab
+#' @importFrom ggplot2 scale_fill_discrete
+#' @importFrom ggplot2 scale_colour_hue
 #' @examples
 #'\dontrun{
 #' plotsim(summaryrepsim(c(0.2,0.2,0.2,0.1,0.1),15,15))
@@ -521,6 +537,7 @@ taufunct<-function(var2,x,y,fixed){
 #' @return a matrix of tau, read to plot
 #' @seealso \code{\link{plottau}} which plots the outputs
 #' @export
+#' @importFrom reshape2 melt
 #' @examples
 #'\dontrun{
 #' tauloop(0.5,"incipext")
@@ -546,6 +563,12 @@ tauloop<-function(x,var){
 #' @seealso \code{\link{tauloop}} which produces the inputs
 #'   which this function plots
 #' @export
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 geom_tile
+#' @importFrom ggplot2 stat_contour
+#' @importFrom ggplot2 xlab
+#' @importFrom ggplot2 ylab
+#' @importFrom ggplot2 scale_fill_gradient
 #' @examples
 #'\dontrun{
 #' z<-tauloop(0.5,"incipext")
@@ -568,6 +591,7 @@ plottau<-function(holding,vars,max){
 #' A shiny app to view the simulations
 #' @return a shiny app
 #' @export
+#' @importFrom shiny shinyApp
 #' @examples
 #'\dontrun{
 #' pbdshiny()

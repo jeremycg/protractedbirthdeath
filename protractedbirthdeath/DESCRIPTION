@@ -3,7 +3,7 @@ Title: models speciation using incipient speciation
 Version: 0.1
 Authors@R: "Jeremy Gray <jeremycgray@gmail.com> [aut, cre]"
 Description: models speciation using incipient speciation
-Depends:
+Imports:
     plyr,
     dplyr,
     ggplot2,
