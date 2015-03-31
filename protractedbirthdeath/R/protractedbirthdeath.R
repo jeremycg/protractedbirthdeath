@@ -594,7 +594,6 @@ plottau<-function(holding,vars,max){
 #' A shiny app to view the simulations
 #' @return a shiny app
 #' @export
-#' @importFrom shiny shinyApp
 #' @examples
 #'\dontrun{
 #' pbdshiny()

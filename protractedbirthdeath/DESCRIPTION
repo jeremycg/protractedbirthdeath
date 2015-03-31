@@ -4,6 +4,8 @@ Version: 0.1
 Authors@R: "Jeremy Gray <jeremycgray@gmail.com> [aut, cre]"
 Description: models speciation using incipient speciation
 License: MIT
+Depends:
+    shiny
 Imports:
     plyr,
     dplyr,
@@ -11,7 +13,6 @@ Imports:
     RColorBrewer,
     reshape2,
     ape,
-    shiny,
     magrittr
-License: MIT
+License: MIT + file LICENSE
 LazyData: true
