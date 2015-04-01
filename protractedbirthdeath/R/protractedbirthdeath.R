@@ -496,16 +496,16 @@ plotcontour<-function(data,variable,xx,yy,var1,val1,var2,val2,var3,val3,logged=F
 #'}
 plotsim<-function(x){
   ggplot()+
-    geom_line(data = x, aes(x = -time, y = meanlivingsp,colour=brewer.pal(5, "Accent")[1]))+
-    geom_line(data = x, aes(x = -time, y = meanlivingin,colour=brewer.pal(5, "Accent")[2]))+
-    geom_line(data = x, aes(x = -time, y = meanextsp,colour=brewer.pal(5, "Accent")[3]))+
-    geom_line(data = x, aes(x = -time, y = meanextin,colour=brewer.pal(5, "Accent")[4]))+
-    geom_line(data = x, aes(x = -time, y = meantaxa,colour=brewer.pal(5, "Accent")[5]))+
-    geom_ribbon(data = x,aes(x = -time,ymax=meanlivingsp+sdlivingsp, ymin=meanlivingsp-sdlivingsp, fill=brewer.pal(5, "Accent")[1]),alpha = 0.2)+
-    geom_ribbon(data = x,aes(x = -time,ymax=meanlivingin+sdlivingin, ymin=meanlivingin-sdlivingin, fill=brewer.pal(5, "Accent")[2]),alpha = 0.2)+
-    geom_ribbon(data = x,aes(x = -time,ymax=meanextsp+sdextsp, ymin=meanextsp-sdextsp, fill=brewer.pal(5, "Accent")[3]),alpha = 0.2)+
-    geom_ribbon(data = x,aes(x = -time,ymax=meanextin+sdextin, ymin=meanextin-sdextin, fill=brewer.pal(5, "Accent")[4]),alpha = 0.2)+
-    geom_ribbon(data = x,aes(x = -time,ymax=meantaxa+sdtaxa, ymin=meantaxa-sdtaxa, fill=brewer.pal(5, "Accent")[5]),alpha = 0.2)+
+    geom_line(data = x, aes(x = -time, y = meanlivingsp,colour=RColorBrewer::brewer.pal(5, "Accent")[1]))+
+    geom_line(data = x, aes(x = -time, y = meanlivingin,colour=RColorBrewer::brewer.pal(5, "Accent")[2]))+
+    geom_line(data = x, aes(x = -time, y = meanextsp,colour=RColorBrewer::brewer.pal(5, "Accent")[3]))+
+    geom_line(data = x, aes(x = -time, y = meanextin,colour=RColorBrewer::brewer.pal(5, "Accent")[4]))+
+    geom_line(data = x, aes(x = -time, y = meantaxa,colour=RColorBrewer::brewer.pal(5, "Accent")[5]))+
+    geom_ribbon(data = x,aes(x = -time,ymax=meanlivingsp+sdlivingsp, ymin=meanlivingsp-sdlivingsp, fill=RColorBrewer::brewer.pal(5, "Accent")[1]),alpha = 0.2)+
+    geom_ribbon(data = x,aes(x = -time,ymax=meanlivingin+sdlivingin, ymin=meanlivingin-sdlivingin, fill=RColorBrewer::brewer.pal(5, "Accent")[2]),alpha = 0.2)+
+    geom_ribbon(data = x,aes(x = -time,ymax=meanextsp+sdextsp, ymin=meanextsp-sdextsp, fill=RColorBrewer::brewer.pal(5, "Accent")[3]),alpha = 0.2)+
+    geom_ribbon(data = x,aes(x = -time,ymax=meanextin+sdextin, ymin=meanextin-sdextin, fill=RColorBrewer::brewer.pal(5, "Accent")[4]),alpha = 0.2)+
+    geom_ribbon(data = x,aes(x = -time,ymax=meantaxa+sdtaxa, ymin=meantaxa-sdtaxa, fill=RColorBrewer::brewer.pal(5, "Accent")[5]),alpha = 0.2)+
     xlab("Time (Mya)")+
     ylab("Number of taxa")+
     scale_fill_discrete(name="",
