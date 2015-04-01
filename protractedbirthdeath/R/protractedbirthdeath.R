@@ -1,3 +1,9 @@
+#a hideous hack to allow me to use ggplot2 in this package, and not destroy R CMD check
+#see http://stackoverflow.com/a/12429344/3760920 for details
+utils::globalVariables(c("meanlivingsp","meanlivingin","meanextsp","meanextin","meantaxa",
+  "sdlivingsp","sdlivingsp","sdlivingin","sdextsp","sdextin","sdtaxa","x","y","z","..level..",
+  "parent","timeatbirth"))
+
 #' Simulate speciation by a protracted birth death process.
 #' @param pars a vector of 5 parameters: c(speciation rate of good species,
 #'   speciation rate of incipient species, completion rate, death rate of
@@ -253,6 +259,7 @@ removeyoungest<-function(z){
 #' @seealso \code{\link{repsim2}} which produces the inputs
 #' @importFrom ape read.tree
 #' @importFrom ape drop.tip
+#' @importFrom ape Ntip
 #' @export
 #' @examples
 #'\dontrun{
@@ -381,7 +388,7 @@ sumfunct<-function(df,time=15){
 #' @importFrom plyr ddply
 #' @seealso \code{\link{summaryrepsim}} which loops this over multiple runs for means and sds
 loopfunct<-function(x,time=15){
- ddply(x,.(run),function(df){sumfunct(df,time)})
+ ddply(x,"run",function(df){sumfunct(df,time)})
 }
 
 #' dplyframe
@@ -459,6 +466,7 @@ titleplot<-function(x){
 #' @param val3 the selected value of variable 3
 #' @param logged whether to plot logged data, defaults to F
 #' @param numbins the number of bins to use in plotting contours
+#' @importFrom ggplot2 ggplot xlim ylim xlab ylab aes stat_contour
 #' @return a ggplot with the two non named variables and countours for the chosen variable
 #' @seealso \code{\link{repsim2}} which produces the inputs
 #' @export
@@ -594,6 +602,17 @@ plottau<-function(holding,vars,max){
 #' A shiny app to view the simulations
 #' @return a shiny app
 #' @export
+#' @importFrom shiny shinyApp
+#' @importFrom shiny pageWithSidebar
+#' @importFrom shiny sidebarPanel
+#' @importFrom shiny sliderInput
+#' @importFrom shiny mainPanel
+#' @importFrom shiny tabsetPanel
+#' @importFrom shiny tabPanel
+#' @importFrom shiny selectInput
+#' @importFrom shiny plotOutput
+#' @importFrom shiny renderPlot
+#' @importFrom shiny headerPanel
 #' @examples
 #'\dontrun{
 #' pbdshiny()
