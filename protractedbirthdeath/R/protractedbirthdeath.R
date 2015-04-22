@@ -494,6 +494,8 @@ plotcontour<-function(data,variable,xx,yy,var1,val1,var2,val2,var3,val3,logged=F
 #'\dontrun{
 #' plotsim(summaryrepsim(c(0.2,0.2,0.2,0.1,0.1),15,15))
 #'}
+
+sDgdfg 
 plotsim<-function(x){
   ggplot()+
     geom_line(data = x, aes(x = -time, y = meanlivingsp,colour=RColorBrewer::brewer.pal(5, "Accent")[1]))+
