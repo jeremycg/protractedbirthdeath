@@ -2,7 +2,7 @@
 sudo: required
 language: r
 
-install:
+before_install:
   - cd ./protractedbirthdeath
 
 env:
